@@ -1,0 +1,165 @@
+CREATE OR REPLACE TRIGGER EJERCICIO1_1 
+BEFORE INSERT OR UPDATE ON PARTICIPATES for each row
+declare
+pproject_id participates.project_id%type;
+BEGIN
+    select distinct p.project_id into pproject_id
+    from project pr, participates p, instructor i
+    where pr.pr_status='Active' and pr.project_id=:new.project_id and
+    p.instructor_id=:new.instructor_id and i.salary < '70000';
+    
+    if (pproject_id) is null then
+        raise_application_error(-20001, 'No se permite la participación en este proyecto');
+    end if;
+        
+END;
+
+
+
+alter table department add numInstructors number default 0
+create or replace TRIGGER EJERCICIO1_2 
+after DELETE OR INSERT OR UPDATE ON INSTRUCTOR for each row
+declare 
+pdept_name department.dept_name%type;
+pinstructor_id instructor.instructor_id%type;
+
+BEGIN
+    if inserting then
+        select dept_name, count(instructor_id) into pdept_name, pinstructor_id
+        from instructor
+        where instructor_id=:new.instructor_id
+        group by dept_name;
+        update department set
+        numInstructors = numInstructors+1 
+        where dept_name=pdept_name;
+    end if;
+    
+    if updating then
+        select dept_name, count(instructor_id) into pdept_name, pinstructor_id
+        from instructor
+        where instructor_id=:new.instructor_id
+        group by dept_name;
+        /*
+        actualizo los valores en instructor
+        */
+        update instructor set
+        dept_name = :new.dept_name
+        where instructor_id =:new.instructor_id;
+        /*
+        actualizo los valores del department en cada departamento
+        */
+        update department set 
+        numInstructors = numInstructors -1
+        where dept_name=pdept_name;
+        
+        update department set 
+        numInstructors = numInstructors +1
+        where dept_name=:new.dept_name;
+        
+    end if;
+    
+    if deleting then
+        select dept_name, count(instructor_id) into pdept_name, pinstructor_id
+        from instructor
+        where instructor_id=:new.instructor_id
+        group by dept_name;
+        update department set
+        numInstructors = numInstructors-1 
+        where dept_name=pdept_name;
+    end if;
+END;
+
+create or replace PROCEDURE EJERCICIO_2 AS 
+cursor c1 is
+select i.instructor_id, i.instructor_name, count(p.project_id) as num_projects, sum(p.extra_payment) as total_extra_payment
+from instructor i, participates p, project pr, student s
+where i.instructor_id=p.instructor_id and p.project_id=pr.project_id 
+and pr_duration > 1 and i.instructor_id not in (select instructor_id from student)
+group by i.instructor_id, i.instructor_name
+order by i.instructor_name desc, num_projects desc;
+
+cursor c2(pinstructor_id instructor.instructor_id%type) is
+select distinct d.dept_name, d.dept_building, c.course_id, c.title, t.sec_id, t.semester, t.year
+from department d, course c, is_prerequisite ip, teaches t
+where c.dept_name=d.dept_name and t.course_id=c.course_id and c.course_id=ip.prereq_id
+and t.instructor_id=pinstructor_id
+order by c.course_id desc;
+
+BEGIN
+  for i in c1 loop
+    dbms_output.put_line('INSTRUCTOR: ' || i.instructor_id || ' / ' || i.instructor_name || ' / '
+    || i.num_projects || ' / '|| i.total_extra_payment);
+    for j in c2(i.instructor_id) loop
+    dbms_output.put_line('--SECTION: ' || j.dept_name || ' - ' || j.dept_building || ' - '
+    || j.course_id || ' - '|| j.title || ' - '|| j.sec_id || ' - '|| j.semester || ' - '|| j.year);
+    end loop;
+  end loop;
+END EJERCICIO_2;
+
+CREATE OR REPLACE PROCEDURE EJERCICIO_3 
+(
+  pyear IN section.year%type 
+) AS 
+
+pstudent_name student.student_name%type;
+pstudent_id student.student_id%type;
+pnota_media takes.grade%type;
+BEGIN
+    select s.student_name, s.student_id, avg(t.grade) as media into pstudent_name, pstudent_id, pnota_media
+    from student s, takes t, course c
+    where t.student_id=s.student_id and s.dept_name=c.dept_name and
+    c.type='Compulsory'
+    group by s.student_name, s.student_id
+    having avg(t.grade) <= all
+    (select min(avg(grade))
+    from takes 
+    where takes.year=pyear
+    group by takes.student_id, takes.semester, takes.sec_id, takes.year)
+    intersect
+    (select s.student_name, s.student_id, avg(t.grade) as media
+    from student s, takes t, course c
+    where t.student_id=s.student_id and s.dept_name=c.dept_name and
+    c.type='Elective'
+    group by s.student_name, s.student_id
+    having avg(t.grade) <= all
+    (select min(avg(grade))
+    from takes 
+    where takes.year=pyear
+    group by takes.student_id, takes.semester, takes.sec_id, takes.year))
+    ;
+    
+    
+    DBMS_OUTPUT.PUT_LINE('Nombre del estudiante: ' || pstudent_name || ' cuyo id: ' ||
+    pstudent_id || ' tiene una nota media de: ' || pnota_media);
+END EJERCICIO_3;
+
+--Comentarios:
+/*
+--esta select permite saber el nombre identificador y nota media
+select s.student_name, s.student_id, avg(t.grade) as media
+    from student s, takes t
+    where t.student_id=s.student_id and s.student_name=pstudent_name
+    group by s.student_name, s.student_id
+    having avg(t.grade) <= all
+    (select min(avg(grade))
+    from takes 
+    group by takes.student_id, takes.semester, takes.sec_id, takes.year);
+    
+-- esta otra permite considerar los que ofrecen al menos una obligatoria y una opcional
+select s.student_name
+from student s, course c
+where s.dept_name=c.dept_name and c.type='Compulsory'
+intersect
+(select s.student_name
+from student s, course c
+where s.dept_name=c.dept_name and c.type='Elective') ;
+
+-- Pense en hacerlas separadas en cursores, porque me salen que en la media hay 2 posibles soluciones
+, si pusiese el fetch para hacer una select de una fila, podria hacer un solo cursor 
+y encontrar el que tenga el mismo nombre, pero finalmente me decante por dejarlo así 
+porque no estaba seguro de hacerlo.
+*/
+
+
+
+
