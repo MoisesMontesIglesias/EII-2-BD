@@ -1,0 +1,59 @@
+create table marcas(
+cifm varchar(8),
+nombrem varchar(20),
+ciudadm varchar(20),
+constraint pk_marcas primary key (cifm)
+)
+
+create table coches(
+codcoche varchar(8),
+nombrech varchar(20),
+modelo varchar (20),
+constraint pk_coches primary key (codcoche)
+)
+
+create table concesionarios(
+cifc varchar(8),
+nombrec varchar(20),
+ciudadc varchar(20)
+constraint pk_concesionarios primary key (cifc)
+
+)
+
+create table clientes(
+dni varchar(8),
+nombre varchar(20),
+apellido varchar(20),
+ciudad varchar(20),
+constraint pk_clientes primary key(dni)
+)
+
+create table marco(
+cifm varchar(8),
+codcoche varchar(8),
+constraint pk_marco primary key(cifm,codcoche),
+constraint fk_marco_marcas foreign key (cifm) references marcas(cifm),
+constraint fk_marco_coches foreign key(codcoche) references coches(codcoche)
+)
+
+create table distribucion(
+codcoche varchar(8),
+cifc varchar(8),
+cantidad decimal(1,0),
+constraint pk_distribucion primary key(codcoche,cifc),
+constraint fk_distribucion_coches foreign key (codcoche) references coches(codcoche),
+constraint fk_distribucion_concesionarios foreign key(cifc) references concesionarios(cifc)
+)
+
+create table ventas(
+codcoche varchar(8),
+cifc varchar(8),
+dni varchar(8),
+color varchar(8),
+constraint pk_ventas primary key (codcoche,cifc,dni),
+constraint fk_ventas_coches foreign key(codcoche) references coches(codcoche),
+constraint fk_ventas_concesionarios foreign key(cifc) references concesionarios(cifc),
+constraint fk_ventas_clientes foreign key(dni) references clientes(dni)
+)
+
+

@@ -1,0 +1,243 @@
+--1. Mostrar los nombres de los clientes con cuentas y prestamos en la sucursal Perryridge. Realizar la consulta de varias formas diferentes (con el exists, con el in, con el producto de tablas y con el intersect).
+SELECT nombre_cliente
+FROM cliente
+WHERE EXISTS (SELECT * FROM cuenta
+    INNER JOIN depositante ON cuenta.num_cuenta = depositante.num_cuenta
+    WHERE depositante.nombre_cliente = cliente.nombre_cliente
+    AND nombre_sucursal = 'Perryridge'
+)
+AND EXISTS (SELECT * FROM prestamo
+    INNER JOIN prestatario ON prestamo.num_prestamo = prestatario.num_prestamo
+    WHERE prestatario.nombre_cliente = cliente.nombre_cliente
+    AND nombre_sucursal = 'Perryridge'
+);
+
+select nombre_cliente
+    from cliente
+    where exists (select *
+		from cuenta, depositante
+		where cuenta.num_cuenta = depositante.num_cuenta and
+			depositante.nombre_cliente = cliente.nombre_cliente and
+ 			nombre_sucursal = 'Perryridge')
+	and exists (select *
+		from prestamo, prestatario
+ 		where prestamo.num_prestamo = prestatario.num_prestamo and
+			prestatario.nombre_cliente = cliente.nombre_cliente and
+ 			nombre_sucursal = 'Perryridge');
+
+select nombre_cliente
+    from cuenta, depositante
+    where cuenta.num_cuenta = depositante.num_cuenta and nombre_sucursal = 'Perryridge'
+        and exists (select *
+		    from prestamo, prestatario
+ 		    where prestamo.num_prestamo = prestatario.num_prestamo and
+			    prestatario.nombre_cliente = depositante.nombre_cliente and
+ 			    nombre_sucursal = 'Perryridge');
+
+SELECT DISTINCT nombre_cliente
+FROM prestatario
+INNER JOIN prestamo ON prestatario.num_prestamo = prestamo.num_prestamo
+WHERE nombre_cliente IN (SELECT nombre_cliente
+    FROM cuenta INNER JOIN depositante ON cuenta.num_cuenta = depositante.num_cuenta
+    WHERE nombre_sucursal = 'Perryridge'
+)
+AND nombre_sucursal = 'Perryridge';
+
+select distinct nombre_cliente
+    from prestatario, prestamo
+    where prestatario.num_prestamo = prestamo.num_prestamo and
+        nombre_sucursal = 'Perryridge' and
+	    nombre_cliente in (select nombre_cliente
+				from cuenta, depositante
+				where cuenta.num_cuenta = depositante.num_cuenta
+                    and nombre_sucursal = 'Perryridge');
+
+select distinct nombre_cliente
+		from cuenta, depositante
+		where cuenta.num_cuenta = depositante.num_cuenta and nombre_sucursal = 'Perryridge'
+	and nombre_cliente in (select nombre_cliente
+		from prestamo, prestatario
+ 		where prestamo.num_prestamo = prestatario.num_prestamo and nombre_sucursal = 'Perryridge');
+
+SELECT DISTINCT depositante.nombre_cliente
+FROM cuenta
+    INNER JOIN depositante ON cuenta.num_cuenta = depositante.num_cuenta
+    INNER JOIN prestatario ON depositante.nombre_cliente = prestatario.nombre_cliente
+    INNER JOIN prestamo ON prestatario.num_prestamo = prestamo.num_prestamo
+WHERE cuenta.nombre_sucursal = 'Perryridge' AND prestamo.nombre_sucursal = 'Perryridge';
+
+select distinct depositante.nombre_cliente
+    from cuenta, depositante, prestatario, prestamo
+    where cuenta.num_cuenta=depositante.num_cuenta
+        and depositante.nombre_cliente=prestatario.nombre_cliente
+        and prestatario.num_prestamo = prestamo.num_prestamo
+        and cuenta.nombre_sucursal = 'Perryridge'
+	and prestamo.nombre_sucursal = 'Perryridge';
+
+SELECT nombre_cliente
+    FROM cuenta
+    INNER JOIN depositante ON cuenta.num_cuenta = depositante.num_cuenta
+    WHERE nombre_sucursal = 'Perryridge'
+    INTERSECT( SELECT nombre_cliente
+        FROM prestamo
+        INNER JOIN prestatario ON prestamo.num_prestamo = prestatario.num_prestamo
+        WHERE nombre_sucursal = 'Perryridge'
+    );
+
+select nombre_cliente
+		from cuenta, depositante
+		where cuenta.num_cuenta = depositante.num_cuenta and nombre_sucursal = 'Perryridge'
+	intersect (select nombre_cliente
+		from prestamo, prestatario
+ 		where prestamo.num_prestamo = prestatario.num_prestamo and nombre_sucursal = 'Perryridge');	
+		
+--2. Mostrar los nombres de los clientes con cuentas pero sin prestamos en la sucursal Perryridge. Realizar la consulta de dos formas diferentes (con el exists/not exists, con el in/not in, con el minus/except).
+SELECT nombre_cliente
+FROM cliente
+WHERE EXISTS (SELECT *
+    FROM cuenta
+    INNER JOIN depositante ON cuenta.num_cuenta = depositante.num_cuenta
+    WHERE depositante.nombre_cliente = cliente.nombre_cliente
+    AND nombre_sucursal = 'Perryridge'
+)
+AND NOT EXISTS (SELECT *
+    FROM prestamo
+    INNER JOIN prestatario ON prestamo.num_prestamo = prestatario.num_prestamo
+    WHERE prestatario.nombre_cliente = cliente.nombre_cliente
+    AND nombre_sucursal = 'Perryridge'
+);
+
+select nombre_cliente
+    from cliente
+    where exists (select *
+		from cuenta, depositante
+		where cuenta.num_cuenta = depositante.num_cuenta and
+			depositante.nombre_cliente = cliente.nombre_cliente and
+			nombre_sucursal = 'Perryridge')
+	and not exists (select *
+		from prestamo, prestatario
+ 		where prestamo.num_prestamo = prestatario.num_prestamo and
+			prestatario.nombre_cliente = cliente.nombre_cliente and
+			nombre_sucursal = 'Perryridge');
+
+select nombre_cliente
+    from cuenta, depositante
+    where cuenta.num_cuenta = depositante.num_cuenta
+        and nombre_sucursal = 'Perryridge'
+	and not exists (select *
+		from prestamo, prestatario
+ 		where prestamo.num_prestamo = prestatario.num_prestamo and
+			prestatario.nombre_cliente = depositante.nombre_cliente and
+ 			nombre_sucursal = 'Perryridge');
+
+SELECT DISTINCT nombre_cliente
+FROM cuenta
+INNER JOIN depositante ON cuenta.num_cuenta = depositante.num_cuenta
+WHERE nombre_cliente NOT IN (
+    SELECT nombre_cliente
+    FROM prestamo
+    INNER JOIN prestatario ON prestamo.num_prestamo = prestatario.num_prestamo
+    WHERE nombre_sucursal = 'Perryridge'
+)
+AND nombre_sucursal = 'Perryridge';
+
+select distinct nombre_cliente
+    from cuenta, depositante
+    where cuenta.num_cuenta = depositante.num_cuenta and
+	    nombre_sucursal = 'Perryridge' and
+	    nombre_cliente not in (select nombre_cliente
+            from prestamo, prestatario
+            where prestamo.num_prestamo = prestatario.num_prestamo and nombre_sucursal = 'Perryridge');	
+
+SELECT nombre_cliente
+    FROM cuenta
+    INNER JOIN depositante ON cuenta.num_cuenta = depositante.num_cuenta
+    WHERE nombre_sucursal = 'Perryridge'
+MINUS (SELECT nombre_cliente
+    FROM prestamo
+    INNER JOIN prestatario ON prestamo.num_prestamo = prestatario.num_prestamo
+    WHERE nombre_sucursal = 'Perryridge');
+
+select nombre_cliente
+    from cuenta, depositante
+    where cuenta.num_cuenta = depositante.num_cuenta and nombre_sucursal = 'Perryridge'
+minus (select nombre_cliente
+    from prestamo, prestatario
+    where prestamo.num_prestamo = prestatario.num_prestamo and nombre_sucursal = 'Perryridge');
+
+--3. Mostrar los nombres de los clientes con cuentas en la sucursal en la que tiene cuentas el cliente Hayes. 
+SELECT DISTINCT d.nombre_cliente
+    FROM depositante d
+    INNER JOIN cuenta a ON d.num_cuenta = a.num_cuenta
+    WHERE nombre_sucursal IN (SELECT nombre_sucursal
+        FROM depositante dh
+        INNER JOIN cuenta ah ON dh.num_cuenta = ah.num_cuenta
+        WHERE dh.nombre_cliente = 'Hayes');
+
+select distinct D.nombre_cliente
+    from depositante D, cuenta A
+    where D.num_cuenta = A.num_cuenta and nombre_sucursal in (select nombre_sucursal
+	    from depositante Dh, cuenta Ah
+	    where Dh.num_cuenta = Ah.num_cuenta and Dh.nombre_cliente = 'Hayes');
+		
+--4. Mostrar los nombres de las sucursales cuyo activo es mayor que el activo de alguna sucursal de Brooklyn.
+select distinct T.nombre_sucursal
+    from sucursal T, sucursal S
+    where T.activo >S.activo and S.ciudad_sucursal = 'Brooklyn';
+
+select nombre_sucursal
+    from sucursal
+    where activo > ANY (select activo from sucursal where ciudad_sucursal='Brooklyn');
+	
+--5. Mostrar los nombres de las sucursales cuyo activo es mayor que el activo de todas las sucursales de Brooklyn.
+select nombre_sucursal
+    from sucursal
+    where activo > all (select activo
+	    from sucursal
+	    where ciudad_sucursal = 'Brooklyn');
+
+select nombre_sucursal
+    from sucursal
+    where activo > (select Max(activo) from sucursal where ciudad_sucursal='Brooklyn');
+
+--6. Mostrar los nombres de los clientes de la sucursal Perryridge en orden alfabetico.
+SELECT nombre_cliente
+    FROM prestatario
+    INNER JOIN prestamo ON prestatario.num_prestamo = prestamo.num_prestamo
+    WHERE prestamo.nombre_sucursal = 'Perryridge'
+UNION (SELECT nombre_cliente
+    FROM depositante INNER JOIN cuenta ON depositante.num_cuenta = cuenta.num_cuenta
+    WHERE cuenta.nombre_sucursal = 'Perryridge') 
+    ORDER BY nombre_cliente;
+
+select nombre_cliente
+        from prestatario, prestamo
+        where prestatario.num_prestamo = prestamo.num_prestamo and prestamo.nombre_sucursal = 'Perryridge'
+    union (select nombre_cliente
+        from depositante,cuenta
+        where depositante.num_cuenta = cuenta.num_cuenta and cuenta.nombre_sucursal = 'Perryridge')
+    order by nombre_cliente;
+
+--7. Mostrar el nombre de los sucursales que tienen el mayor promedio de saldos.
+select nombre_sucursal
+    from cuenta
+    group by nombre_sucursal
+    having avg(saldo) >= all(select avg(saldo)
+        from cuenta
+        group by nombre_sucursal);
+
+--8. Mostrar el promedio de los saldos de todos los clientes de la ciudad de Harrison que tienen al menos dos cuentas. 
+SELECT AVG(saldo) AS saldo_medio
+    FROM depositante
+        INNER JOIN cuenta ON depositante.num_cuenta = cuenta.num_cuenta
+        INNER JOIN cliente ON depositante.nombre_cliente = cliente.nombre_cliente
+    WHERE ciudad_cliente = 'Harrison'
+    GROUP BY depositante.nombre_cliente
+    HAVING COUNT(*) >= 2;
+
+select avg(saldo) as saldo_medio
+    from depositante, cuenta, cliente
+    where depositante.nombre_cliente = cliente.nombre_cliente and
+        depositante.num_cuenta = cuenta.num_cuenta and ciudad_cliente = 'Harrison'
+    group by depositante.nombre_cliente
+    having count (*) >= 2; 

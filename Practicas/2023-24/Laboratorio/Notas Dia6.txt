@@ -1,0 +1,47 @@
+select au_nombre, au_apellido, coalesce(au_telefono, 'sin telefono')
+from autores
+
+Se utiliza into para cuando queremos devolver una fila
+Si queremos devolver varias filas de datos utilizamos cursores.
+
+CREATE OR REPLACE PROCEDURE PRAC1_EJER5B AS 
+vcantidad distribucion.cantidad%TYPE;
+pcifc distribucion.cifc%TYPE;
+cursor c1 is -- declaracion explícita del cursor
+    select cifc, SUM (cantidad)
+    from distribucion
+    group by cifc;
+BEGIN
+-- Tratamiento del cursor con un loop
+Open c1; -- Abrir cursor
+    -- Tratamos fila a fila el cursor
+    loop
+        fetch c1 into pcifc, vcantidad;
+        dbms_output.put_line('pcifc= ' ||pcifc||' total = '||vcantidad);
+        exit when c1%NOTFOUND;
+        
+    end  loop;
+Close c1; -- Cerrar cursor
+
+-- Tratamiento while
+open c1; -- Abrimos el cursor
+	-- Tratamos la fila a fila el cursor
+	fetch c1 into pcifc, vcantidad;
+	while c1%FOUND loop
+	dbms_output.put_line('pcifc= ' ||pcifc||' total = '||vcantidad);
+	fetch c1 into pcifc, vcantidad;
+	end loop;
+close c1; --Cerramos el cursor
+
+--Tratamiento cursor con for
+for i in c1 loop
+	dbms_output.put_line('pcifc= ' ||i.cifc ||' total = '||i.total );
+end loop;
+
+Si hay insert, update o delete --> Hacer un commit
+Si no queremos que se pase a disco, hacemos un Rollback
+
+Ejercicio 8: select object_name, object_type from user_objects
+Ej 9:
+
+

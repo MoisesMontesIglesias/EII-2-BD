@@ -1,0 +1,252 @@
+--1. Muestra el apellido, puesto de trabajo, salario y % de comisión de aquellos empleados que ganan comisiones. Ordena los datos por el puesto de trabajo de forma ascendente y por el salario de forma descendente.
+SELECT last_name, job_id, salary, commission_pct 
+FROM employees
+WHERE commission_pct IS NOT NULL
+ORDER BY job_id ASC, salary DESC;
+
+--2. Muestra aquellos empleados que tienen un apellido que empieza por J, K, L o M 
+SELECT last_name
+FROM employees
+WHERE SUBSTR(last_name,1,1) IN ('J', 'K', 'L', 'M');
+
+SELECT last_name
+FROM employees
+WHERE last_name LIKE 'J%' OR  last_name LIKE 'K%' OR last_name LIKE 'L%' OR last_name LIKE 'M%';
+
+--3. Muestra para todos los empleados el apellido y número de empleado, junto al apellido y número de empleado de su manager.
+SELECT w.last_name AS Employee, w.employee_id AS Emp_id, m.last_name AS Manager, m.employee_id AS Mgr_id
+FROM employees w, employees m
+WHERE w.manager_id= m.employee_id;
+
+SELECT w.last_name AS Employee, w.employee_id AS Emp_id, m.last_name AS Manager, m.employee_id AS Mgr_id
+FROM employees w 
+  INNER JOIN employees m ON w.manager_id= m.employee_id;
+
+--4. Muestra el apellido y fecha de contratación de todos los empleados contratados después del empleado apellidado Davies
+SELECT e.last_name, e.hire_date
+FROM employees e, employees davies
+WHERE davies.last_name = 'Davies' AND davies.hire_date < e.hire_date;
+
+SELECT e.last_name, e.hire_date
+FROM employees e INNER JOIN employees davies ON davies.last_name = 'Davies' AND davies.hire_date < e.hire_date;
+
+--5. Muestra los nombres y fechas de contratación de todos los empleados que fueron contratados antes que sus managers. Muestra tambien el apellido de su manager y su fecha de contratación.
+SELECT w.last_name, w.hire_date, m.last_name, m.hire_date 
+FROM employees w, employees m
+WHERE w.manager_id = m.employee_id AND w.hire_date < m.hire_date;
+
+SELECT w.last_name, w.hire_date, m.last_name, m.hire_date 
+FROM employees w INNER JOIN employees m ON  w.manager_id = m.employee_id
+WHERE w.hire_date < m.hire_date;
+
+--6. Muestra el número de departamento y su salario mínimo para aquel departamento con mayor salario medio.
+SELECT department_id, MIN(salary)
+FROM employees
+GROUP BY department_id
+HAVING AVG(salary) = (SELECT MAX(prom)
+    FROM (SELECT AVG(salary) AS prom
+        FROM employees
+        GROUP BY department_id));
+
+SELECT department_id, MIN(salary)
+FROM employees
+GROUP BY department_id
+HAVING AVG(salary) >= ALL (SELECT AVG(salary)
+    FROM employees
+    GROUP BY department_id);
+
+--7. Muestra el número de departamento, nombre y localización para aquellos departamentos donde no trabajen empleados cuyo trabajo sea 'SA_REP'.
+SELECT *
+FROM departments
+WHERE department_id NOT IN (SELECT department_id
+    FROM employees
+    WHERE job_id = 'SA_REP'  AND department_id is not null );
+	--Cuidado, hay un empleado que no está asignado a departamento, por lo que la subconsulta devuelve un null que puede ser interpretado como quiera el SGBD
+
+
+SELECT * 
+FROM departments
+WHERE department_id IN (
+SELECT department_id
+FROM departments
+MINUS -- EXCEPT en otros SGBD
+(SELECT department_id
+    FROM employees
+    WHERE job_id = 'SA_REP'  AND department_id is not null ));
+	
+	
+--8. Muestra el número de departamento, su nombre y número de empleados trabajando en el que cumplan:
+--a) que tengan menos de tres empleados, 
+
+SELECT d.department_id, d.department_name, COUNT(*) AS NUMBER_EMP
+FROM departments d, employees e
+WHERE d.department_id = e.department_id
+GROUP BY d.department_id, d.department_name
+HAVING COUNT(*) < 3;
+
+SELECT d.department_id, d.department_name, COUNT(*) 
+FROM departments d INNER JOIN  employees e ON d.department_id = e.department_id
+GROUP BY d.department_id, d.department_name
+HAVING COUNT(*) < 3;
+
+
+--b) que el departamento tenga el máximo número de empleados
+SELECT d.department_id, d.department_name, COUNT(*) 
+FROM departments d INNER JOIN  employees e ON d.department_id = e.department_id
+GROUP BY d.department_id, d.department_name
+HAVING COUNT(*) = (SELECT MAX(total)
+    FROM (SELECT COUNT(*) as total
+        FROM employees
+        GROUP BY department_id));
+
+SELECT d.department_id, d.department_name, COUNT(*) 
+FROM departments d, employees e
+WHERE d.department_id = e.department_id
+GROUP BY d.department_id, d.department_name
+HAVING COUNT(*) >= ALL (SELECT COUNT(*)
+    FROM employees
+    GROUP BY department_id);
+
+--c) que el departamento tenga el mínimo numero de empleados.
+SELECT d.department_id, d.department_name, COUNT(*) 
+    FROM departments d INNER JOIN  employees e ON d.department_id = e.department_id
+    GROUP BY d.department_id, d.department_name
+    HAVING COUNT(*) = (SELECT MIN(total)
+        FROM (SELECT COUNT(*) as total
+        FROM employees
+        GROUP BY department_id));
+
+SELECT d.department_id, d.department_name, COUNT(*) 
+    FROM departments d, employees e
+    WHERE d.department_id = e.department_id
+    GROUP BY d.department_id, d.department_name
+    HAVING COUNT(*) <= ALL (SELECT COUNT(*)
+        FROM employees
+        GROUP BY department_id);        
+
+--9. Muestra el puesto de trabajo (job_id) que se contrató (hire_date) en la primera mitad de 1990 y también en la primera mitad de 1991.
+
+(SELECT job_id
+FROM employees
+WHERE hire_date BETWEEN to_date('1990-01-01','yyyy-mm-dd') AND to_date('1990-06-30','yyyy-mm-dd'))
+INTERSECT 
+(SELECT job_id
+FROM employees WHERE hire_date BETWEEN to_date('1991-01-01','yyyy-mm-dd') AND to_date('1991-06-30','yyyy-mm-dd'));
+
+
+--10. Muestra los tres empleados que más ganan de la tabla empleados (employees). Lo mismo pero con los dos que menos ganan.
+SELECT last_name, salary
+FROM employees e
+WHERE 3 > (SELECT COUNT(*)
+    FROM employees
+    WHERE e.salary < salary);
+
+SELECT last_name, salary
+FROM employees
+ORDER BY salary DESC
+FETCH FIRST 3 ROWS WITH TIES;
+
+SELECT last_name, salary
+FROM employees
+ORDER BY salary DESC
+FETCH FIRST 3 ROWS ONLY;
+
+--IMPORTANTE: Las tres implementaciones de la consulta 10 NO devuelven el mismo resultado en caso de que haya empate en el salario de los empleados que más ganan; es decir, la tercera implementación devuelve siempre tres empleados (FETCH FIRST 3 ROWS ONLY), mientras que la primera y la segunda pueden devolver mas de tres empleados (en caso de empate). En términos de tiempo de ejecución, la segunda solución es mejor que la primera.
+
+SELECT last_name, salary
+FROM employees e
+WHERE 2 > (SELECT COUNT(*)
+    FROM employees
+    WHERE e.salary > salary);
+
+SELECT last_name, salary
+FROM employees
+ORDER BY salary ASC
+FETCH FIRST 2 ROWS WITH TIES;
+
+SELECT last_name, salary
+FROM employees
+ORDER BY salary ASC
+FETCH FIRST 2 ROWS ONLY;
+
+--11. Mostrar el número de empleado y su apellido para aquellos empleados que trabajan en el estado de California
+--CUIDADO: el empleado 178 no tiene department_id (es NULL), por lo que será necesario controlarlo
+--EN GENERAL, siempre que un campo puede ser NULL es necesario que indiquemos explícitamente qué queremos que ocurra
+SELECT employee_id, last_name
+FROM employees e
+WHERE department_id is not null AND (SELECT location_id
+    FROM departments d
+    WHERE e.department_id = d.department_id)
+    IN (SELECT location_id
+        FROM locations l
+        WHERE STATE_province = 'California');
+
+SELECT employee_id, last_name
+FROM employees e
+WHERE  department_id is not null AND department_id in (SELECT department_id
+    FROM departments d
+    WHERE location_id
+    IN (SELECT location_id
+        FROM locations l
+        WHERE STATE_province = 'California'));
+
+	
+SELECT employee_id, last_name
+FROM employees e INNER JOIN departments d ON d.department_id = e.department_id
+INNER JOIN LOCATIONS l ON d.location_id=l.location_id 
+WHERE STATE_province = 'California'
+AND  e.department_id is not null ;		
+
+
+
+
+--12. Mostrar el empleado que menos diferencia de salario tiene respecto a su manager. Mostrar el employee_id y salary tanto del empleado como del manager y la diferencia de salario
+--CUIDADO existen empleados que no tienen manager. Por lo tanto debemos controlar qué queremos que pase.
+SELECT e.employee_id,e.salary,m.employee_id,m.salary,m.salary-e.salary diferencia
+  FROM employees e,employees m
+  WHERE e.manager_id=m.employee_id
+    AND e.manager_id IS NOT NULL
+  ORDER BY diferencia
+  FETCH FIRST 1 ROWS WITH TIES
+
+--13.	Mostrar los empleados cuyo salario no esté en el rango adecuado de su puesto de trabajo (job_id). Mostrar además del employee_id, su salario y los salarios mínimo y máximo del puesto de trabajo.
+
+SELECT employee_id, salary, min_salary,max_salary
+  FROM employees e, jobs j
+  WHERE e.job_id=j.job_id
+    AND salary not between min_salary and max_salary
+
+--14.	Mostrar el código de empleado, su nombre (first_name) y de cuántos empleados es manager, para todos los empleados que sean manager de algún otro.
+
+
+select employee_id,first_name,cuantos
+   FROM employees e, (SELECT manager_id,COUNT(*) cuantos
+     FROM employees
+     GROUP BY manager_id) b
+   WHERE employee_id=b.manager_id
+
+--15.	Mostrar el código de empleado, su nombre (first_name) del empleado que sea manager de más empleados.
+select employee_id,first_name
+   FROM employees
+   WHERE employee_id IN (SELECT manager_id 
+     FROM employees
+     GROUP BY manager_id
+     ORDER BY COUNT(*) DESC
+     FETCH FIRST 1 ROWS WITH TIES)
+
+
+select employee_id,first_name,cuantos
+   FROM employees e, (SELECT manager_id,COUNT(*) cuantos
+     FROM employees
+     GROUP BY manager_id) b
+   WHERE employee_id=b.manager_id
+   ORDER BY cuantos DESC
+   FETCH FIRST 1 ROW WITH TIES
+
+--16.Incrementar un 15% el salario de los empleados que estén desempeñando un puesto cuyo salario mínimo sea igual a 4200 euros.
+
+update employees
+set salary = salary*1.15
+where job_id IN (select job_id
+                      from jobs
+                      where min_salary = 4200)

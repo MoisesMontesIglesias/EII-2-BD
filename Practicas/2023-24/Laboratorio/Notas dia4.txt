@@ -1,0 +1,46 @@
+Notas Sesion Dia 4 
+check (edad > 10 and edad <= 18)
+
+En la practica 2, proyecta es binario, porq le salen dos lineas
+sesion, fecha, codpelicula, codsala son todas claves primarias (atributos), 2 claves externas
+De N a N se le ponen las claves.
+Una clave primaria puede tener varios atributos, pero solo hay UNA PRIMARY KEY
+Si va de 1 a N, metemos la clave primaria de proecta (los 4 aributos) en entrada, los cuales deben ser NOT NULL por el 1:N y
+estas son claves externas. Es decir 1 clave externa de 4 atributos 
+
+practica 3:
+Siempre q hay ternaria se crea tabla
+Hidroelectrica, nuclear, solar, termica, tiene 4 atributos, sus 3 propios y pnombre de productor, como clave primaria externa
+compra tiene 5 atributos, 5 claves primarias (tnombre, matricula, pnombre, snombre, pais) 3 claves externas (
+Si hubiese N,N,1 --> todos los atributos, primarias los de relacion N,N
+Aributos y externas se mantienen
+Si hubiese N,1,1 --> se mantiene la primaria de N y puede escogerse entre cualquiera de los 1,1
+A las entidades debil se les da la clave primaria de una tabla fuerte 
+
+Orden de lectura en SQL: 1 --> from. 2 --> where. 3 --> group by. 4 --> having. 5 --> select
+
+nota media por alumno cuando nota media es mayor de 5
+select dni, avg(nota)
+from esta_matriculado
+where avg(nota) > 5 
+group by dni
+ESTO ESTA MAL. CORRECTAMENTE SERÍA LA SIGUIENTE MANERA
+select dni, avg(nota)
+from esta_matriculado 
+group by dni
+having arg(nota) >= 5
+
+HAVING --> CONDICIONES PARA LAS AGRUPACIONES
+WHERE --> CONDICIONES PARA LOS ATRIBUTOS
+
+nota media por alumno cuando nota media es mayor de 5  dni > '10.000.000'
+select dni, avg(nota)
+from esta_matriculado 
+where dni > '10.000.000'
+group by dni
+having arg(nota) >= 5
+
+
+
+
+

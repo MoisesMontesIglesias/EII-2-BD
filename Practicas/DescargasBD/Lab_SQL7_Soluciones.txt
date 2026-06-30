@@ -1,0 +1,126 @@
+--1. Obtener el nombre de las estaciones y su número de transformadores, para las estaciones en las que alguna de las centrales nucleares que les entregan energía genera más de 25000 residuos.
+
+select es.enombre, es.transformadores 
+from estacion es, entrega e, nuclear n 
+where es.enombre=e.enombre and e.pnombre=n.pnombre and n.residuos>25000;
+
+--2. Obtener el nombre de las compañías que comienza por la letra ‘C’ que poseen redes de distribución que envían energía a otras redes, pero no reciben energía de ninguna otra red.
+
+select distinct cnombre
+from pertenece
+where cnombre like 'C%'
+    and numred in (select numred_envia from envia_energia)
+    and numred not in (select numred_recibe from envia_energia)
+
+--3. Obtener para cada envío de energía entre redes de distribución, el número de red de la red que envía energía y de la que la recibe, así como el volumen de energía del envío siempre y cuando la estación de cabecera de la red que envía energía tenga un número de transformadores mayor que el número de transformadores de la red que recibe la energía y el volumen de energía enviado sea mayor de 16000W.
+
+select ee.numred_envia, ee.numred_recibe, volumen
+from envia_energia ee, red_distribucion rde, estacion ese, red_distribucion rdr, estacion esr
+where ee.numred_envia = rde.numred and rde.enombre = ese.enombre
+    and ee.numred_recibe = rdr.numred and rdr.enombre = esr.enombre
+    and volumen > 16000 and ese.transformadores > esr.transformadores
+	
+select ee.numred_envia, ee.numred_recibe, volumen
+from envia_energia ee, red_distribucion rde, estacion ese
+where ee.numred_envia = rde.numred and rde.enombre = ese.enombre and volumen>16000 and 
+transformadores > (select transformadores from red_distribucion rdr, estacion esr
+                where ee.numred_recibe = rdr.numred and rdr.enombre = esr.enombre)
+
+
+--4. Obtener el nombre y el número de transformadores de las estaciones que tengan más de 800 transformadores y que sean cabeceras de redes de distribución que no abastecen a subestaciones con un número total acumulado de consumidores particulares mayor que el número total acumulado de consumidores de empresas.
+
+select distinct es.enombre, es.transformadores
+from estacion es, red_distribucion rd
+where es.enombre=rd.enombre and es.transformadores> 800
+    and rd.numred not in (select se.numred
+            from subestacion se
+            where se.nsubestacion in (select d.nsubestacion
+                    from distribuye d, zona z
+                    where d.zcodigo=z.zcodigo
+                    group by nsubestacion
+                    having sum(consparticulares)>sum(consempresas)));
+
+--5. Obtener el nombre y el número de reactores de los productores nucleares (ordenados de forma descendente por residuos generados) cuyo nombre comienza por 'C' y se trate de productores que entregan energía a estaciones con más de 300 transformadores y que sean cabecera de redes de distribución de longitud máxima superior a 125000 y que dichas redes dispongan de al menos una línea instalada.
+
+select pnombre, numreactores from nuclear where pnombre like 'C%' and pnombre in (select pnombre from entrega en, estacion es, red_distribucion r, linea l
+where en.enombre=es.enombre and r.enombre=es.enombre and l.numred=r.numred
+and transformadores>300 and longitudmaxima>=125000)
+order by residuos desc
+
+--6. Obtener el nombre, la producción media y el número de reactores de los productores nucleares que compran plutonio a suministradores con mayor stock de todos.
+
+select p.pnombre, prodmedia, numreactores
+from productor p, nuclear n
+where p.pnombre=n.pnombre and p.pnombre in
+(select distinct pnombre from compra c, suministrador s where c.snombre=s.snombre and c.pais=s.pais 
+and stock>=(select max(stock) from suministrador));
+
+--7. Obtener el nombre y capital social de las compañías de más de 50 M de dicho capital, así como el número total de acciones que poseen dichas compañías en redes de distribución que ni envían ni reciben energía de ninguna otra red de distribución y siempre y cuando dicho número total de acciones sea mayor que 25000.
+
+select p.cnombre, capitalsocial, sum(numacciones) totalacciones
+from pertenece p, compania c
+where p.cnombre=c.cnombre and capitalsocial>50
+and numred not in (select numred_envia from envia_energia) and numred not in (select numred_recibe from envia_energia)
+group by p.cnombre, capitalsocial
+having sum(numacciones)>25000
+
+--8.Obtener el nombre de las estaciones junto con su número de transformadores para aquellas estaciones que son cabecera de las redes de distribución cuyas líneas abastecen las subestaciones que distribuyen energía solo a zonas cuyo consumo en instituciones es mayor que el consumo de particulares.
+
+select enombre, transformadores
+from estacion where enombre in (select enombre from red_distribucion where numred in
+(select numred from subestacion where nsubestacion in
+((select nsubestacion from distribuye)
+minus 
+(select nsubestacion from distribuye where zcodigo in (select zcodigo from zona where consinstituciones<=consparticulares)))));
+
+select e.enombre, transformadores
+from estacion e, red_distribucion r, subestacion s where e.enombre=r.enombre and r.numred=s.numred and s.nsubestacion in
+((select nsubestacion from distribuye)
+minus 
+(select nsubestacion from distribuye where zcodigo in (select zcodigo from zona where consinstituciones<=consparticulares)));
+
+--9. Obtener el nombre de las provincias que tienen más de una zona cuyas empresas consumen (consEmpresas) más que las instituciones (consInstituciones). Además, solo deben salir las provincias cuyo consumo medio máximo de dichas zonas sea superior a 20000. Muestra el resultado ordenado de forma descendente por el nombre de las provincias.
+
+SELECT P.nombre
+ FROM provincia P, zona Z
+ WHERE P.pcodigo=Z.pcodigo  AND Z.consempresas>Z.consinstituciones
+ GROUP BY P.pcodigo, P.nombre
+ HAVING MAX(Z.consumomedio)>20000 AND COUNT(*)>1
+ ORDER BY P.nombre DESC;
+
+--10. Obtener el nombre y el número de transformadores de las estaciones cuyo nombre empiece por M y que son cabecera de al menos una red que envía y recibe energía (ambas cosas).
+
+SELECT distinct E.enombre, E.transformadores 
+ FROM estacion E, red_distribucion RD
+ WHERE E.enombre=RD.enombre 
+  AND E.enombre LIKE 'M%' 
+  AND RD.numred IN ( SELECT numred_envia  FROM envia_energia) 
+  AND RD.numred IN ( SELECT numred_recibe FROM envia_energia);
+
+--11. Obtener el nombre de los productores nucleares que compran plutonio a algún suministrador y que solo entregan energía a estaciones que no son cabecera de ninguna red de distribución.
+
+SELECT pnombre 
+ FROM compra
+ WHERE pnombre IN 
+( SELECT pnombre  FROM entrega
+ MINUS
+SELECT pnombre  FROM entrega WHERE enombre IN (select enombre FROM  red_distribucion))
+
+--12. Obtener el número de red junto con sus líneas (nlinea) y la longitud de éstas para aquellas redes de distribución que envían energía a otras redes de distribución cuya estación de cabecera es la que recibe menos cantidad de energía de los productores.
+
+SELECT L.numred, L.nlinea, L.longitud  
+FROM envia_energia EE, red_distribucion RDR, linea L
+ WHERE EE.numred_envia=L.numred AND EE.numred_recibe=RDR.numred
+  AND RDR.enombre IN ( SELECT enombre 
+                       FROM entrega
+                       GROUP BY enombre
+                    HAVING SUM(cantidad) <= ALL ( SELECT SUM(cantidad) FROM entrega GROUP BY enombre));
+	   
+--13.Incrementar en 10 unidades el número de transformadores de aquellas estaciones en las que alguna de las centrales nucleares que les entregan energía genera un volumen de residuos superior a 30000.
+
+UPDATE estacion SET transformadores=transformadores+10
+		WHERE enombre IN (SELECT e.enombre 
+		FROM entrega e, nuclear n 
+		WHERE e.pnombre=n.pnombre and n.residuos>30000)
+
+

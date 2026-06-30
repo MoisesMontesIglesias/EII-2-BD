@@ -1,0 +1,42 @@
+﻿1. (1 row)
+CODOFERTA	ORIGEN		DESTINO		PRECIO
+of2		Barcelona	Bruselas	1.140
+----------------------------------------------------------
+2. (1 row)
+TIPO		VENTAS
+combinados	10
+----------------------------------------------------------
+3. (1 row)
+MAYOR
+6
+----------------------------------------------------------
+4. (6 rows)
+NOMBRE
+María Iglésias
+Carlos Cifuentes
+Damián Durán
+Ernesto Estévez
+Fernando Fidalgo
+José García
+----------------------------------------------------------
+5. (15 rows)
+NOMBREMAYORISTA	NOMBREAGENCIA	DESTINO		IMPORTEDEFINITIVO	NOMBRE			PORCENTAJE
+Mayorista2	Agencia1	Ginebra		223.342			Paco Fernández		5
+Mayorista2	Agencia1	Ginebra		223.342			Paco Fernández		6
+Mayorista2	Agencia1	Ginebra		223.342			Carmen Pérez		4
+Mayorista2	Agencia1	Ginebra		150.000			Antonio Álvarez		5
+Mayorista2	Agencia1	Ginebra		123.000			Bernardo Boquerón	5
+Mayorista4	Agencia3	Bruselas	15.151			Paco Fernández		5
+Mayorista4	Agencia3	Bruselas	15.151			Paco Fernández		6
+Mayorista4	Agencia3	Bruselas	15.151			Carmen Pérez		4
+Mayorista4	Agencia3	Bruselas	15.151			Carlos Cifuentes	2
+Mayorista4	Agencia3	Bruselas	15.151			Carlos Cifuentes	3
+Mayorista5	Agencia4	Bruselas	123			Paco Fernández		5
+Mayorista5	Agencia4	Bruselas	123			Paco Fernández		6
+Mayorista7	Agencia5	Ginebra		12.345			Carlos Cifuentes	2
+Mayorista7	Agencia5	Ginebra		12.345			Carlos Cifuentes	3
+Mayorista5	Agencia6	Ginebra		1.235			Carmen Pérez		4
+----------------------------------------------------------
+6. (1 row)
+CODOFERTA	CODAGENCIA	NOMBREAGENCIA
+of1		ag1		Agencia1

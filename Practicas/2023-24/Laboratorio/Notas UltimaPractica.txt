@@ -1,0 +1,21 @@
+a) Procedure Actualiza_Precio
+	(IN ciudad VARCHAR (20),
+	IN producto VARCHAR(20),
+	INOUT Precio INTEGER);
+
+CallableStatement cs = con.prepareCall("{call actualiza_precio(?,?,?)}");
+
+1. Asigno valor a los parametros de entrada si hay
+cs.setString(2,"Oviedo");
+cs.setString(3,"Zapatos");
+cs.setInt(4,10);
+
+2. Registro tipo parámetros de salida (si hay)
+cs.registerOutParameter(1, java.sql.types.INTEGER);
+cs.registerOutParameter(4, java.sql.types.INTEGER);
+
+3. Ejecutamos
+cs.execute();
+
+
+

@@ -1,0 +1,215 @@
+1. (35 rows)
+LAST_NAME	JOB_ID	SALARY		COMMISSION_PCT
+Russell		SA_MAN	14000.00	0.40 
+Partners	SA_MAN	13500.00	0.30 
+Errazuriz	SA_MAN	12000.00	0.30
+Cambrault	SA_MAN	11000.00	0.30
+Zlotkey		SA_MAN	10500.00	0.20
+Ozer		SA_REP	11500.00	0.25
+Abel		SA_REP	11000.00	0.30
+Vishney		SA_REP	10500.00	0.25
+King		SA_REP	10000.00	0.35
+Bloom		SA_REP	10000.00	0.20
+Tucker		SA_REP	10000.00	0.30
+Fox		SA_REP	9600.00		0.20
+Sully		SA_REP	9500.00		0.35
+Bernstein	SA_REP	9500.00		0.25
+Greene		SA_REP	9500.00		0.15
+McEwen		SA_REP	9000.00		0.35
+Hall		SA_REP	9000.00		0.25
+Hutton		SA_REP	8800.00		0.25
+Taylor		SA_REP	8600.00		0.20
+Livingston	SA_REP	8400.00		0.20
+Olsen		SA_REP	8000.00		0.20
+Smith		SA_REP	8000.00		0.30
+Doran		SA_REP	7500.00		0.30
+Cambrault	SA_REP	7500.00		0.20
+Smith		SA_REP	7400.00		0.15
+Bates		SA_REP	7300.00		0.15
+Marvins		SA_REP	7200.00		0.10
+Grant		SA_REP	7000.00		0.15
+Sewall		SA_REP	7000.00		0.25
+Tuvalu		SA_REP	7000.00		0.15
+Lee		SA_REP	6800.00		0.10
+Ande		SA_REP	6400.00		0.10
+Banda		SA_REP	6200.00		0.10
+Johnson		SA_REP	6200.00		0.10
+Kumar		SA_REP	6100.00		0.10
+---------------------------------------------------------------------
+2. (23 rows)
+LAST_NAME
+King
+Kochhar
+Lorentz
+Khoo
+Kaufling
+Mourgos
+Mikkilineni
+Landry
+Markle
+Marlow
+Mallin
+Ladwig
+Matos
+King
+McEwen
+Marvins
+Lee
+Kumar
+Livingston
+Johnson
+McCain
+Jones
+Mavris
+---------------------------------------------------------------------
+3. (106 rows, se puede cambiar el límite de filas en las propiedades de sesión para ver más de 100).
+---------------------------------------------------------------------
+4. (78 rows)
+---------------------------------------------------------------------
+5. (30 rows)
+---------------------------------------------------------------------
+6. (1 row)
+DEPARTMENT_ID	MIN_SALARY
+90		17000.00
+---------------------------------------------------------------------
+7. (26 rows)
+DEPARTMENT_ID	DEPARTMENT_NAME			MANAGER_ID	LOCATION_ID
+10		Administration			200		1700
+20		Marketing			201		1800
+30		Purchasing			114		1700
+40		Human Resources			203		2400
+50		Shipping			121		1500
+60		IT				103		1400
+70		Public Relations		204		2700
+90		Executive			100		1700
+100		Finance				108		1700
+110		Accounting			205		1700
+120		Treasury					1700
+130		Corporate Tax					1700
+140		Control And Credit				1700
+150		Shareholder Services				1700
+160		Benefits					1700
+170		Manufacturing					1700
+180		Construction					1700
+190		Contracting					1700
+200		Operations					1700
+210		IT Support					1700
+220		NOC						1700
+230		IT Helpdesk					1700
+240		Government Sales				1700
+250		Retail Sales					1700
+260		Recruiting					1700
+270		Payroll						1700
+--------------------------------------------------------------------
+8.a. (5 rows)
+DEPARTMENT_ID	DEPARTMENT_NAME		NUMBER_EMP
+10		Administration		1
+20		Marketing		2
+40		Human Resources		1
+70		Public Relations	1
+110		Accounting		2
+---------------------------------------------------------------------
+8.b. (1 row)
+DEPARTMENT_ID	DEPARTMENT_NAME	NUMBER_EMP
+50		Shipping	45
+---------------------------------------------------------------------
+8.c. (3 rows)
+DEPARTMENT_ID	DEPARTMENT_NAME		NUMBER_EMP
+10		Administration		1
+40		Human Resources		1
+70		Public Relations	1
+---------------------------------------------------------------------
+9. (1 row)
+JOB_ID
+IT_PROG
+---------------------------------------------------------------------
+10.a. (3 rows)
+LAST_NAME	SALARY
+King		24000.00
+Kochhar		17000.00
+De Haan		17000.00
+
+
+10.b.  
+
+(con empates)
+LAST_NAME                     SALARY
+------------------------- ----------
+Olson                           2100
+Markle                          2200
+Philtanker                      2200
+
+(sin empates). Olson sale siempre. En vez de Markle puede salir Philtanker 
+LAST_NAME                     SALARY
+------------------------- ----------
+Olson                           2100
+Markle                          2200
+
+
+---------------------------------------------------------------------
+11. (45 rows)
+
+---------------------------------------------------------------------
+12. (2 rows)
+
+employee_id    salary  employee_id    salary  diferencia
+-----------  --------  -----------  --------  ----------
+        174  11000.00          149  10500.00     -500.00
+        168  11500.00          148  11000.00     -500.00
+
+---------------------------------------------------------------------
+13. 
+ (0 rows)
+ 
+Pero si se ejecuta antes la consulta 16 de este ejercicio entonces el resultado será: 
+
+(3 rows)
+employee_id    salary  min_salary  max_salary
+-----------  --------  ----------  ----------
+        109  10350.00        4200        9000
+        110   9430.00        4200        9000
+        206   9545.00        4200        9000
+
+
+
+---------------------------------------------------------------------
+14. (18 rows)
+
+employee_id  first_name  cuantos
+-----------  ----------  -------
+        100  Steven           14
+        101  Neena             5
+        102  Lex               1
+        103  Alexander         4
+        108  Nancy             5
+        114  Den               5
+        120  Matthew           8
+        121  Adam              8
+        122  Payam             8
+        123  Shanta            8
+        124  Kevin             8
+        145  John              6
+        146  Karen             6
+        147  Alberto           6
+        148  Gerald            6
+        149  Eleni             6
+        201  Michael           1
+        205  Shelley           1
+---------------------------------------------------------------------
+15. 
+employee_id  first_name
+-----------  ----------
+        100  Steven
+
+
+---------------------------------------------------------------------
+16.
+
+EMPLOYEE_ID	SALARY
+109	     10.350
+110	      9.430
+111	      8.855
+112	      8.970
+113	      7.935
+206	      9.545
+

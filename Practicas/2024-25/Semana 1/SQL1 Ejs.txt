@@ -1,0 +1,35 @@
+SQL 1:
+1. select * from coches
+2. select * from coches where modelo='gtd'
+3. 
+4. 
+5. 
+
+Operadores:
+= 		--> Igual
+!= <>   	--> Distinto
+AND, OR, NOT	--> Y, O, No
+
+Insertar, actualizar y eliminar:
+INSERT INTO coches (codcoche, nombrech, modelo) values ('15', 'capture', 'gtd');
+UPDATE coches set modelo='gtx', nombrech = 'megane' where codcoche='23' 
+DELETE FROM coches where codcoche='23'
+
+EJERCICIOS:
+/*Marcas para las que el atributo ciudad = 'barcelona'*/
+select * 
+from marcas
+where ciudadm = 'barcelona';
+/*Clientes de madrid que se apellidan garcia*/
+select *
+from clientes
+where apellido='garcia' and ciudad = 'madrid';
+/*Obtener los nombres de las marcas que tienen modelo 'gtd'*/
+select distinct nombrem
+from marcas m, MarCo ma, coches c
+where m.cifm=ma.cifm and ma.codcoche = c.codcoche and c.modelo='gtd'
+
+
+
+
+

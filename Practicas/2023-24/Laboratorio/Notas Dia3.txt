@@ -1,0 +1,113 @@
+Notas Dia 3: 
+Reglas a seguir E-R
+1) Regla primaria (no se puede repetir este valor). Toda entidad tiene 1
+2) Unique --> Permite que una clave no primaria no salga repetida, es decir, sea una clave candidato
+3) Check --> Garantiza que bajo ningún concepto, se guarde un valor/dato en la tabla que no cumpla lo requerido( EJ --> que sea mayor de 0)
+Check, garantiza que si se pone un valor tiene que ser uno de los permitidos, pero no obliga a escribir en ese hueco, puede estar vacío
+4) NOT NULL --> Garantiza que se debe poner un valor en ese campo en específico, es decir, no puede quedar vacío
+5) Fk --> Foreign key --> El valor este en la clase de la que cogemos la información
+
+Opciones de las relaciones --> N-N, 1-N, 1-1 (De más a menos común)
+N-N (creamos tabla)
+1-N (No creamos tabla)
+1-1 (No creamos tabla)
+- Si es de N-N, código escrito abajo (esta_matriculado) 
+
+- Si es de 1-N, la PK es codasig, dnia puede repetirse ya que solo hay un alumno para cualquier asignatura, pero no hay una asignatura para varios alumnos
+Solucion 1-N, meter dnia en Asignatura, si se mete en Alumno, repetiriamos los mismos valores muchas veces, además de que no se puede repetir el PK
+En asignatura, se sigue manteniendo el PK (codasig), es decir, no se cambia
+
+- Si es 1-1, la clave primaria, puede ser cualquiera de ellas, ya que sabemos que no se va a repetir, es decir, una PK y una Unique
+Tiene claves externas
+Se puede meter dnia en Asignatura o codasig en Alumno, pero no ambas, porque estaría mal
+
+DATO IMPORTANTE:
+La clave primaria en una relacion, si ha 2 0-N y un 1-1, Las que tienen el 0-N es la clave primaria
+Si hay un 1-1, escribir 'not null' para que no quede vacío
+
+IMPORTANTE, CON ESTO BORRAMOS TABLA Y ENLACES ENTIDAD
+drop table esta_matriculado;
+drop table asignatura;
+
+Código:
+create table asignatura (
+codasig varchar(8) ,
+nomasig varchar(20) ,
+curso decimal(1,0) ,
+creditos decimal(2,0) ,
+tipo varchar(20) not null,
+constraint pk_asignatura primary key (codasig),
+constraint uq_asignatura unique (nomasig),
+constraint ck_asignatura check ( tipo IN('obligatoria', 'optativa', 'libre'))
+constraint ck_asignatura check ( tipo tipo='obligatoria'or tipo='optativa' or tipo='libre')
+)
+
+create table esta_matriculado (
+dnia varchar(8),
+codasig varchar(8),
+constraint pk_esta_matriculado primary key (dnia, codasig)
+constraint fk_esta_matriculado_alumno foreign key (dnia) references alumno(dnia)
+constraint fk_esta_matriculado_asignatura foreign key (codasig) references asignatura(codasig)
+)
+
+
+Código final completo:
+create table asignatura (
+codasig varchar(8) ,
+nomasig varchar(20) ,
+curso decimal(1,0) ,
+creditos decimal(2,0) ,
+tipo varchar(20) not null,
+codcarr varchar(8) not null,
+constraint pk_asignatura primary key (codasig),
+constraint uq_asignatura unique (nomasig),
+constraint ck_asignatura check ( tipo IN('obligatoria', 'optativa', 'libre')),
+--constraint ck_asignatura check ( tipo tipo='obligatoria'or tipo='optativa' or tipo='libre')
+constraint fk_asignatura_carrera foreign key (codcarr) references carrera (codcarr)
+)
+
+--create table esta_matriculado (
+--dnia varchar(8),
+--codasig varchar(8),
+--constraint pk_esta_matriculado primary key (dnia, codasig),
+--constraint fk_esta_matriculado_alumno foreign key (dnia) references alumno(dnia),
+--constraint fk_esta_matriculado_asignatura foreign key (codasig) references asignatura(codasig)
+--)
+
+create table carrera(
+codcarr varchar(8),
+nombrec varchar(20),
+duracion decimal(1,0),
+constraint pk_carrera primary key (codcarr)
+
+)
+
+create table profesor(
+dnip varchar(8),
+nombrep varchar(20),
+apellidop varchar(20),
+domiciliop varchar(40),
+constraint pk_profesor primary key (dnip)
+)
+
+create table imparte(
+dnip varchar(8),
+codasig varchar(8),
+constraint pk_imparte primary key (dnip, codasig),
+constraint fk_imparte_asignatura foreign key (codasig) references asignatura(codasig),
+constraint fk_imparte_profesor foreign key (dnip) references profesor(dnip)
+)
+
+create table califica(
+dnip varchar(8) not null,
+dnia varchar(8),
+codasig varchar(8),
+nota decimal (3,1),
+fecha_calificacion date,
+constraint pk_califica primary key (dnia, codasig),
+constraint fk_califica_alumno foreign key (dnia) references alumno(dnia),
+constraint fk_califica_asignatura foreign key (codasig) references asignatura(codasig),
+constraint fk_califica_profesor foreign key (dnip) references profesor(dnip)
+
+)
+

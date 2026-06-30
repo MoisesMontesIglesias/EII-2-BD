@@ -1,0 +1,240 @@
+
+1. (11 rows)
+TITULO                                          	INGRESOS
+About Face: The Essentials of User Interface Desig	1300.000000         
+Human Computer Interaction				4050.000000         
+Usabilidad. Diseno de Sitios Web			17800.000000        
+Sistemas de Bases de Datos				13500.000000        
+Concepcion y Diseno de Bases de Datos               	8775.000000         
+Introduccion a los Sistemas de Bases de Datos     	10020.000000        
+Database Systems Concepts                         	19950.000000        
+Programacion en Java                              	986.000000          
+Introduccion a la Programacion con Java           	1161.000000         
+The Elements of User Interface Design             	3015.000000         
+Principles and Guidelines uin Software UID        	1740.000000  
+---------------------------------------------------------------------
+2. (4 rows)
+TITULO					VENTAS_PREVISTAS
+Usabilidad. Diseno de Sitios Web        200.000         
+Sistemas de Bases de Datos		300.000         
+Concepcion y Diseno de Bases de Datos	225.000         
+Database Systems Concepts		350.000         
+---------------------------------------------------------------------
+3. (16 rows)
+au_nombre  au_apellido   au_telefono
+---------  ------------  -----------
+Abraham    Silberschatz  <null>     
+Adoracion  De Miguel     912356788  
+Alan       Dix           567894324  
+Alan       Cooper        567843566  
+C.J.       Date          678976534  
+Carolyn    Begg          789645333  
+David      Begg          <null>     
+Deborah    Mayhew        678954322  
+Gerald     Weiss         435678888  
+Henry      Korth         345678346  
+Ignacio    Zahonero      914567892  
+Jakob      Nielsen       349876543  
+Janet      Finlay        <null>     
+Luis       Joyanes       914567893  
+Theo       Mandel        349876543  
+Thomas     Connolly      456783232  ---------------------------------------------------------------------
+4. (3 rows)
+AU_NOMBRE	AU_APELLIDO 
+Abraham		Silberschatz   
+Janet		Finlay         
+David		Begg           
+---------------------------------------------------------------------
+5. (16 rows)
+AU_NOMBRE	AU_APELLIDO	AU_TELEFONO
+Jakob		Nielsen		349876543
+Abraham		Silberschatz	sin telefono
+Henry		Korth		345678346
+C.J.		Date		678976534
+Adoracion	De Miguel	912356788
+Thomas		Connolly	456783232
+Carolyn		Begg		789645333
+Alan		Cooper		567843566
+Alan		Dix		567894324
+Janet		Finlay		sin telefono
+Deborah		Mayhew		678954322
+Theo		Mandel		349876543
+David		Begg		sin telefono
+Gerald		Weiss		435678888
+Luis		Joyanes		914567893
+Ignacio		Zahonero	914567892
+---------------------------------------------------------------------
+6. (6 rows)
+TITULO_ID       TITULO                       			VENTAS_PREVISTAS      
+4		Introduccion a los Sistemas de Bases de Datos	167.000         
+5		Database Systems Concepts			350.000         
+2		Sistemas de Bases de Datos			300.000         
+7		Introduccion a la Programacion con Java		27.000          
+3		Concepcion y Diseno de Bases de Datos		225.000         
+6		Programacion en Java				34.000          
+---------------------------------------------------------------------
+7. (1 row)
+AU_ID	AU_NOMBRE	AU_APELLIDO 	AU_TELEFONO	AU_DIRECCION	AU_CIUDAD
+14	Thomas 		Connolly	456783232	2 Clementi Loop	Singapore
+---------------------------------------------------------------------
+8. (1 row)
+PRECIO_MEDIO     
+56.272 
+
+(1 row)
+PRECIO_MEDIO_BBDD  
+50.250 
+---------------------------------------------------------------------
+9. (6 rows)
+ED_ID	TOTAL                 
+6	1                     
+1	4                     
+2	2                     
+5	1                     
+4	2                     
+3	1                     
+
+(9 rows)
+ED_ID	TIPO	TOTAL                 
+6	IU	1                     
+1	IU	3                     
+2	BD	1                     
+5	BD	1                     
+1	BD	1                     
+4	BD	1                     
+4	PROG	1                     
+2	PROG	1                     
+3	IU	1      
+          
+---------------------------------------------------------------------
+10. (3 rows)
+TIPO	TOTAL                 
+IU	5                     
+BD	4                     
+PROG	2 
+---------------------------------------------------------------------
+11. (3 rows)
+tipo  precio_medio
+----  ------------
+BD              54
+PROG            36
+IU        88.66667   
+---------------------------------------------------------------------
+12. (3 rows)
+TIPO	TOTAL                 
+IU	5                     
+BD	4                     
+PROG	2    
+---------------------------------------------------------------------
+13. (3 rows)
+tipo  precio_medio
+----  ------------
+BD           50.25
+PROG            36
+IU            69.2  
+---------------------------------------------------------------------
+14. (1 row)
+ed_id  precio_medio
+-----  ------------
+3                67   
+---------------------------------------------------------------------
+15. (2 rows)
+editor_nombre  editor_apellido  orden_editores
+-------------  ---------------  --------------
+John           Osborn                        1
+Amorette       Pedersen                      2         
+---------------------------------------------------------------------
+16. (3 rows)
+EDITOR_NOMBRE   ED_NOMBRE	   	ED_CIUDAD
+Allen           Addison Wesley	Boston         
+Miguel          McGraw-Hill	    Madrid	
+Marta           Ra-ma		   	Barcelona      
+---------------------------------------------------------------------
+17. (7 rows)
+TITULO						AU_NOMBRE	AU_APELLIDO	ORDEN_AUTORES
+Database Systems Concepts			Abraham		Silberschatz	1.000         
+Database Systems Concepts			Henry		Korth		2.000         
+Introduccion a los Sistemas de Bases de Datos	C.J.		Date		1.000         
+Database Systems Concepts			C.J.		Date		3.000         
+Concepcion y Diseno de Bases de Datos		Adoracion	De Miguel	1.000         
+Sistemas de Bases de Datos			Thomas		Connolly	1.000         
+Sistemas de Bases de Datos			Carolyn		Begg		2.000         
+---------------------------------------------------------------------
+19. (3 rows)
+editor_nombre  editor_apellido  editor_jefe
+-------------  ---------------  -----------
+Miguel         Martín           Marta      
+José           Vázquez          Antonio    
+C.L.           Liu              Allen              
+---------------------------------------------------------------------
+19. (2 rows)
+au_id  au_nombre  au_apellido
+-----  ---------  -----------
+15     Carolyn    Begg       
+6      David      Begg       
+---------------------------------------------------------------------
+20. (2 rows)
+ED_NOMBRE
+Addison Wesley  
+McGraw-Hill  
+---------------------------------------------------------------------
+21. (1 row)
+TITULO        						PRECIO 
+About Face: The Essentials of User Interface Design  	13  
+
+(1 row)
+TITULO				PRECIO
+Human Computer Interaction	90.000
+---------------------------------------------------------------------
+22. (3 rows)
+AU_NOMBRE	AU_APELLIDO	AU_CIUDAD
+Jakob		Nielsen		Boston         
+Abraham		Silberschatz	Boston         
+Gerald		Weiss		Boston         
+---------------------------------------------------------------------
+23. (1 row)
+AU_NOMBRE	AU_APELLIDO    
+C.J.		Date           
+---------------------------------------------------------------------
+24. (3 rows)
+TIPO  
+BD  
+IU  
+PROG  
+---------------------------------------------------------------------
+25. 
+tipo
+----
+BD  
+PROG
+IU  
+
+
+tipo
+----
+IU  
+
+
+---------------------------------------------------------------------
+26. (1 row)
+TITULO  
+About Face: The Essentials of User Interface Design  
+---------------------------------------------------------------------
+27. (3 rows)
+TITULO          
+Sistemas de Bases de Datos                          
+Introduccion a la Programacion con Java             
+Concepcion y Diseno de Bases de Datos               
+---------------------------------------------------------------------
+28. (2 rows)
+ED_NOMBRE       
+John Wiley & Sons                                   
+IDG Books
+
+ 
+
+ 
+
+
+
+ 

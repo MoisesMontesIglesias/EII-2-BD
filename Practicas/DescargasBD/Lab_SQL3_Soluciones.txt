@@ -1,0 +1,316 @@
+        
+--1) Mostrar los títulos y los ingresos previstos de cada título. Dichos ingresos seran calculados mediante el producto de las ventas previstas por el precio asignado a cada título.
+SELECT titulo, ventas_previstas*precio as ingresos
+FROM titulos;
+
+--2) Mostrar los títulos cuyas ventas previstas están entre 200 y 5000 unidades.
+SELECT titulo, ventas_previstas
+FROM titulos
+WHERE ventas_previstas BETWEEN 200 AND 5000;
+
+--3) Mostrar los nombres, apellidos y teléfonos de todos los autores ordenados en primer lugar por el nombre de forma ascendente y luego por el apellido en forma descendente.  
+SELECT au_nombre, au_apellido, au_telefono
+FROM autores
+ORDER BY au_nombre asc, au_apellido desc;
+
+--4) Mostrar los nombres y apellidos de los autores que no tienen teléfono (es decir, es nulo)
+SELECT au_nombre, au_apellido
+FROM autores
+WHERE au_telefono IS NULL;
+
+--5) Mostrar los nombres, apellidos y teléfonos de todos los autores, indicando "sin telefono" para aquellos que no tienen teléfono.
+SELECT au_nombre, au_apellido, COALESCE(au_telefono, 'sin telefono')
+FROM autores;
+
+--6) Mostrar el identificador de los títulos, el propio título y las ventas previstas para cada uno de los títulos cuyo tipo es bases de datos (BD)o programación (PROG). Ordenar los datos descendentemente por precio. Formular la consulta de dos formas diferentes
+SELECT titulo_id, titulo, ventas_previstas
+FROM titulos
+WHERE tipo='BD' or tipo='PROG'
+ORDER BY precio DESC;
+
+SELECT titulo_id, titulo, ventas_previstas
+FROM titulos
+WHERE tipo IN ('BD', 'PROG')
+ORDER BY precio DESC;
+
+--7) Mostrar todos los autores cuyo teléfono comience con el prefijo 456.
+SELECT *
+FROM autores
+WHERE au_telefono IS NOT NULL AND au_telefono LIKE '456%';
+
+--8) Mostrar el precio medio de los títulos. Formalizar la consulta de dos formas diferentes.
+SELECT SUM(precio)/COUNT(precio) as precio_medio
+FROM titulos;
+
+SELECT AVG(precio) as precio_medio
+FROM titulos;
+
+-- Mostrar el precio medio para los títulos cuyo tipo es bases de datos (BD). Formalizar la consulta de dos formas diferentes.
+SELECT SUM(precio)/COUNT(precio) as precio_medio_bbdd
+FROM titulos
+WHERE tipo='BD';
+
+SELECT AVG(precio) as precio_medio_bbdd
+FROM titulos
+WHERE tipo='BD';    
+
+--9) Mostrar el número de títulos que tiene cada editorial.
+SELECT ed_id, COUNT(titulo_id) as total
+FROM titulos
+GROUP BY ed_id;
+
+--Indicar tambien el número de títulos que pertenecen a cada tipo para cada editorial.
+SELECT ed_id, tipo, COUNT(titulo_id) as total
+FROM titulos
+GROUP BY ed_id, tipo;
+
+--10) Mostrar para cada tipo de título el número de ejemplares existentes. 
+SELECT tipo, COUNT(tipo) as total
+FROM titulos
+GROUP BY tipo;
+
+--11) Mostrar el precio medio para cada tipo de título cuya fecha de publicación sea posterior al año 2000 (>=01/01/2000).
+SELECT tipo, AVG(precio) as precio_medio
+FROM titulos
+WHERE f_publicacion>=TO_DATE('01/01/2000','DD/MM/YYYY')
+GROUP BY tipo;
+
+--12) Para cada tipo de título, mostrar el número de ejemplares que existen, siempre éste sea superior a una unidad.
+SELECT tipo, COUNT(*) as total
+FROM titulos
+GROUP BY tipo
+HAVING COUNT(*) > 1;
+
+--13) Para cada tipo de título, mostrar el precio medio, siempre que sea superior a 35.
+SELECT tipo, AVG(precio) as precio_medio
+FROM titulos
+GROUP BY tipo
+HAVING AVG(precio) > 35;
+
+--14) Para cada editorial, mostrar el precio medio de sus títulos, siempre que el identificador de la editorial sea superior a 2 y el precio medio sea superior a 60. El resultado debe aparecer ordenado de forma ascendente por el identificador de la editorial.
+--como no dice nada respecto a la ordenación se puede dejar así, pero es una ordenación de cadena de texto, 11111 iría antes del 2. si queremos que sea númérica hay que usar TO_NUMBER/CAST
+
+SELECT ed_id, AVG(precio) as precio_medio
+FROM titulos
+WHERE TO_NUMBER(ed_id,'9999') > 2
+GROUP BY ed_id
+HAVING AVG(precio)>60
+ORDER BY TO_NUMBER(ed_id,'9999');
+
+SELECT ed_id, AVG(precio) as precio_medio
+FROM titulos
+WHERE CAST(ed_id as integer) > 2
+GROUP BY ed_id
+HAVING AVG(precio)>60
+ORDER BY CAST(ed_id as integer);
+
+
+--15) Mostrar el nombre, apellidos y orden de los editores para el título cuyo identificador es 1.
+SELECT editor_nombre, editor_apellido, orden_editores
+FROM editores E, titulosEditores TE
+WHERE E.editor_id = TE.editor_id and TE.titulo_id='1';
+
+--16) Mostrar los nombres de los editores y de las editoriales de la misma ciudad. 
+SELECT editor_nombre, ed_nombre, ed_ciudad
+FROM editoriales EL 
+INNER JOIN editores e ON el.ed_ciudad = e.editor_ciudad;
+
+SELECT editor_nombre, ed_nombre, ed_ciudad
+FROM editoriales EL, editores E
+WHERE EL.ed_ciudad = E.editor_ciudad;
+
+--17) Mostrar los títulos de todos los libros de bases de datos (BD) y los nombres de sus autores, así como el orden en el que figuran.
+SELECT titulo, au_nombre, au_apellido, orden_autores
+FROM autores A
+INNER JOIN titulosautores TA ON A.au_id = TA.au_id
+INNER JOIN titulos T ON TA.titulo_id = T.titulo_id
+WHERE T.tipo = 'BD';
+
+SELECT titulo, au_nombre, au_apellido, orden_autores
+FROM autores A, titulos T, titulosAutores TA
+WHERE A.au_id=TA.au_id AND TA.titulo_id = T.titulo_id AND T.tipo='BD';
+
+--18) Mostrar el nombre, apellidos y nombre de su editor jefe de los editores.
+SELECT E1.editor_nombre, E1.editor_apellido, E2.editor_nombre as editor_jefe
+FROM editores E1, editores E2
+WHERE E1.editor_jefe = E2.editor_id;
+
+SELECT E1.editor_nombre, E1.editor_apellido, E2.editor_nombre as editor_jefe
+FROM editores E1 
+INNER JOIN editores E2 ON E1.editor_jefe = E2.editor_id;
+
+--19) Mostrar los datos de los autores (au_id, au_nombre y au_apellido) en los que coinciden su apellido.
+SELECT A1.au_id, A1.au_nombre, A1.au_apellido, A2.au_id, A2.au_nombre, A2.au_apellido
+FROM autores A1, autores A2
+WHERE A1.au_id<>A2.au_id AND A1.au_apellido=A2.au_apellido;
+
+SELECT A1.au_id, A1.au_nombre, A1.au_apellido, A2.au_id, A2.au_nombre, A2.au_apellido
+FROM autores A1
+INNER JOIN autores A2 ON A1.au_apellido=A2.au_apellido
+WHERE A1.au_id<>A2.au_id 
+
+
+--20) Mostrar los nombres de las editoriales que publican títulos de programación. Formalizar la consulta de dos formas diferentes al menos.
+SELECT DISTINCT ed_nombre
+FROM editoriales E
+INNER JOIN titulos T ON E.ed_id = T.ed_id
+WHERE tipo = 'PROG';
+
+SELECT DISTINCT ed_nombre
+FROM editoriales E, titulos T
+WHERE E.ed_id = T.ed_id AND tipo='PROG';
+
+SELECT ed_nombre
+FROM editoriales
+WHERE ed_id IN (SELECT ed_id FROM titulos WHERE tipo='PROG');
+
+SELECT DISTINCT ed_nombre
+FROM editoriales E
+WHERE EXISTS (SELECT * FROM titulos T WHERE T.ed_id=E.ed_id and tipo='PROG');
+
+--21) Mostrar el título y el precio de los libros más baratos. 
+SELECT titulo, precio
+FROM titulos
+WHERE precio = (SELECT MIN (precio) FROM titulos);
+
+SELECT titulo, precio
+FROM titulos
+WHERE precio <= ALL (SELECT precio FROM titulos); 
+
+SELECT titulo, precio
+FROM titulos
+ORDER BY precio ASC
+FETCH FIRST 1 ROWS WITH TIES
+
+
+-- Hacer lo mismo con los mas caros.
+SELECT titulo, precio
+FROM titulos
+WHERE precio = (SELECT MAX (precio) FROM titulos);
+
+SELECT titulo, precio
+FROM titulos
+WHERE precio >= ALL (SELECT precio FROM titulos);
+
+SELECT titulo, precio
+FROM titulos
+ORDER BY precio DESC
+FETCH FIRST 1 ROWS WITH TIES
+
+--22) Mostrar el nombre y la ciudad de los autores que viven en la misma ciudad que Abraham Silberschatz.
+SELECT au_nombre, au_apellido, au_ciudad
+FROM autores
+WHERE au_ciudad IN (SELECT au_ciudad FROM autores
+	WHERE au_nombre='Abraham' AND au_apellido='Silberschatz');
+
+--23) 23.	Mostrar el nombre y apellido de los autores que son autores individuales (porcentaje_participacion=1) y coautores(porcentaje_participacion<1).  
+SELECT au_nombre, au_apellido
+FROM autores A
+INNER JOIN titulosautores TA ON A.au_id = TA.au_id
+WHERE porcentaje_participacion < 1.0 AND A.au_id IN 
+(
+    SELECT DISTINCT TA.au_id
+    FROM titulosautores TA
+    WHERE porcentaje_participacion = 1.0
+);
+
+SELECT au_nombre, au_apellido
+FROM autores A, titulosautores TA
+WHERE A.au_id=TA.au_id AND porcentaje_participacion<1.0
+	AND A.au_id IN (SELECT DISTINCT TA.au_id FROM titulosautores TA
+		WHERE porcentaje_participacion=1.0);
+
+SELECT au_nombre, au_apellido
+FROM autores
+WHERE au_id IN (SELECT au_id  FROM titulosautores WHERE porcentaje_participacion<1.0
+            INTERSECT
+            SELECT au_id  FROM titulosautores WHERE porcentaje_participacion=1);
+
+SELECT au_nombre, au_apellido
+FROM autores A,titulosautores TA
+WHERE A.au_id=TA.au_id AND porcentaje_participacion<1.0
+	AND EXISTS (SELECT * FROM titulosautores TA
+		WHERE A.au_id=TA.au_id and porcentaje_participacion=1.0);
+            
+--24) Mostrar los tipos de libros que son comunes a más de una editoral. Formalizar la consulta de dos formas diferentes.
+SELECT DISTINCT T1.tipo
+FROM titulos T1
+WHERE T1.tipo IN (SELECT T2.tipo FROM titulos T2 WHERE T1.ed_id <>T2.ed_id);
+
+SELECT DISTINCT T1.tipo
+FROM titulos T1, titulos T2
+WHERE T1.tipo = T2.tipo and T1.ed_id<>T2.ed_id;
+
+SELECT DISTINCT T1.tipo
+FROM titulos T1
+WHERE EXISTS (SELECT * FROM titulos T2 WHERE T1.tipo=T2.tipo AND T1.ed_id <>T2.ed_id);
+
+select tipo 
+from titulos
+group by tipo
+having count(distinct ed_id)>1
+
+--25) 25.	Mostrar los tipos de libros cuyo precio máximo es al menos un 10% más caro que el precio medio para ese tipo. Y un 20%.
+SELECT tipo
+FROM titulos
+GROUP BY tipo
+HAVING MAX(precio)>= 1.1*AVG(precio);
+
+SELECT tipo
+FROM titulos
+GROUP BY tipo
+HAVING MAX(precio)>= 1.2*AVG(precio);
+
+--26) Mostrar los libros que tienen una pre-publicación mayor que la mayor pre-publicación que tiene la editorial Prentice Hall.
+SELECT titulo
+FROM titulos
+WHERE pre_publicacion > ALL (SELECT pre_publicacion
+    FROM editoriales E
+    INNER JOIN titulos T ON T.ed_id = E.ed_id
+    WHERE E.ed_nombre = 'Prentice Hall'
+);
+
+SELECT titulo
+FROM titulos
+WHERE pre_publicacion > ALL (SELECT pre_publicacion
+		FROM editoriales E, titulos T
+		WHERE T.ed_id = E.ed_id and E.ed_nombre ='Prentice Hall');
+
+SELECT titulo
+FROM titulos
+WHERE pre_publicacion > (SELECT max(pre_publicacion)
+		FROM editoriales E, titulos T
+		WHERE T.ed_id = E.ed_id and E.ed_nombre ='Prentice Hall');
+		
+--27) Mostrar los títulos de los libros publicados por una editorial localizada en una ciudad que comienza por la letra B.
+SELECT T.titulo
+FROM titulos T
+WHERE T.ed_id IN (SELECT E.ed_id FROM editoriales E WHERE E.ed_ciudad LIKE 'B%');
+
+SELECT T.titulo
+FROM titulos T
+INNER JOIN editoriales E ON E.ed_id = T.ed_id
+WHERE E.ed_ciudad LIKE 'B%';
+
+SELECT T.titulo
+FROM titulos T, editoriales E
+WHERE E.ed_id=T.ed_id AND E.ed_ciudad LIKE 'B%';
+
+SELECT T.titulo
+FROM titulos T
+WHERE EXISTS (SELECT * FROM editoriales E WHERE E.ed_id =T.ed_id AND E.ed_ciudad LIKE 'B%');
+
+--28) Mostrar los nombres de las editoriales que no publican libros de bases de datos.
+SELECT ed_nombre
+FROM editoriales
+WHERE ed_id NOT IN (SELECT ed_id FROM titulos  WHERE tipo ='BD');
+
+SELECT E.ed_nombre
+FROM editoriales E
+WHERE NOT EXISTS (SELECT * FROM titulos T WHERE T.ed_id = E.ed_id and T.tipo ='BD');
+
+SELECT E.ed_nombre
+FROM editoriales E
+WHERE E.ed_id IN (SELECT E.ed_id FROM editoriales E
+		MINUS  --EXCEPT en otros SGBD
+		SELECT T.ed_id FROM titulos T WHERE T.tipo ='BD');

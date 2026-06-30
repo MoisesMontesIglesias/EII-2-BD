@@ -1,0 +1,58 @@
+Ejercicio 1: select * from marcas where ciudadm='barcelona'
+Ejercicio 2: select * from clientes where ciudad='madrid' and apellido='garcia' // select * from clientes where ciudad='madrid' or apellido='garcia'
+Ejercicio 3: select apellido,ciudad from clientes
+Ejercicio 4: select apellido from clientes where ciudad='madrid'
+Ejercicio 5: select distinct nombrem from marcas,marco,coches where marcas.cifm=marco.cifm and marco.codcoche=coches.codcoche and coches.modelo='gtd'
+Ejercicio 6: select distinct nombrem from marcas,marco,coches,ventas where marcas.cifm=marco.cifm and marco.codcoche=coches.codcoche and coches.codcoche=ventas.codcoche and ventas.color='rojo'
+Ejercicio 7: select c2.nombrech from coches c1, coches c2 where c1.modelo=c2.modelo and c1.nombrech='cordoba'
+Ejercicio 8: select nombrech from coches minus (select nombrech from coches where modelo='gtd')
+Ejercicio 9: select dni, cifm from marcas, clientes where ciudadm=ciudad
+Ejercicio 9.1: select dni, cifm from marcas, clientes minus (select dni, cifm from marcas,clientes where ciudadm=ciudad)
+Ejercicio 10: select coches.codcoche from coches, concesionarios, distribucion where coches.codcoche=distribucion.codcoche and concesionarios.cifc=distribucion.cifc and ciudadc='barcelona'
+Ejercicio 11: select codcoche from concesionarios, clientes, ventas where ciudadc='madrid' and ciudad='madrid' and concesionarios.cifc=ventas.cifc and clientes.dni=ventas.dni
+Ejercicio 12: select codcoche from concesionarios, ventas, clientes where concesionarios.cifc=ventas.cifc and ventas.dni=clientes.dni and ciudad=ciudadc
+Ejercicio 13: select distinct m2.nombrem, m1.nombrem from marcas m1, marcas m2 where m1.ciudadm=m2.ciudadm and m1.nombrem<>m2.nombrem
+Ejercicio 14: select distinct clientes.dni from clientes, ventas, concesionarios where clientes.dni=ventas.dni and ventas.cifc=concesionarios.cifc and ciudadc='madrid'
+Ejercicio 15: select distinct color from ventas, concesionarios where nombrec='acar' and ventas.cifc=concesionarios.cifc
+Ejercicio 16: select codcoche from ventas, concesionarios where ciudadc='madrid' and ventas.cifc=concesionarios.cifc
+Ejercicio 17: select nombre from clientes, ventas, concesionarios where nombrec='dcar' and ventas.cifc=concesionarios.cifc and clientes.dni=ventas.dni
+Ejercicio 18: select nombre, apellido from coches, ventas, clientes where modelo='gtd' and ventas.codcoche=coches.codcoche and clientes.dni=ventas.dni and color='blanco'
+Ejercicio 19: select distinct nombre, apellido from coches, ventas, clientes, concesionarios, distribucion where modelo='gti' and ventas.cifc=concesionarios.cifc and clientes.dni=ventas.dni and ciudadc='madrid' and coches.codcoche=distribucion.codcoche and distribucion.cifc=concesionarios.cifc
+Ejercicio 20: select distinct nombre, apellido from clientes, ventas v1, ventas v2 where clientes.dni=v1.dni and v1.color='blanco' and v2.color='rojo' and clientes.dni=v2.dni
+Ejercicio 21: select distinct dni from ventas where dni not in(select dni from ventas where cifc != '1')
+Ejercicio 22: select distinct nombre from clientes, ventas, concesionarios minus(select nombre from clientes,ventas,concesionarios where ventas.dni=clientes.dni and ventas.cifc=concesionarios.cifc and ventas.color='rojo' and ciudadc='madrid' ) 
+Ejercicio 23: select distinct cifc, SUM (cantidad) from distribucion group by cifc
+Ejercicio 24: SELECT CIFC, AVG(CANTIDAD) FROM DISTRIBUCION GROUP BY CIFC HAVING AVG(CANTIDAD)>=10
+Ejercicio 25: select cifc, sum(cantidad) from distribucion group by cifc having sum(cantidad) between 10 and 18
+Ejercicio 26: select count(*) from marcas || SELECT COUNT(DISTINCT CIUDADM) FROM MARCAS
+Ejercicio 27: select nombre, apellido from clientes, ventas, concesionarios where clientes.dni = ventas.dni and ventas.cifc = concesionarios.cifc and concesionarios.ciudadc = 'madrid' and clientes.nombre like 'j%'
+Ejercicio 28: select * from clientes order by nombre
+Ejercicio 29: SELECT DISTINCT NOMBRE, APELLIDO FROM CLIENTES CL, VENTAS V WHERE CL.DNI=V.DNI AND V.CIFC IN (SELECT CIFC FROM VENTAS WHERE DNI='2') AND CL.DNI<>'2';
+Ejercicio 29.1: SELECT DISTINCT NOMBRE, APELLIDO FROM CLIENTES CL, VENTAS V WHERE CL.DNI=V.DNI AND V.CIFC IN (SELECT CIFC FROM VENTAS WHERE DNI='1') AND CL.DNI<>'1';
+Ejercicio 30: SELECT D.CIFC,CN.NOMBREC, CN.CIUDADC FROM CONCESIONARIOS CN, DISTRIBUCION D WHERE CN.CIFC=D.CIFC GROUP BY D.CIFC,CN.NOMBREC, CN.CIUDADC HAVING SUM(D.CANTIDAD) > (SELECT SUM(CANTIDAD)/COUNT(DISTINCT CIFC) FROM DISTRIBUCION);
+select sum (cantidad)/countdistinct cifc) from distribucion
+select avg(total) from (select sum(cantidad)total from distribucion group by cifc)
+Misma operacion con distinta forma de expresarlo.
+Ejercicio 31: SELECT CN.CIFC, CN.NOMBREC, CN.CIUDADC FROM CONCESIONARIOS CN, DISTRIBUCION D WHERE CN.CIFC=D.CIFC GROUP BY CN.CIFC, CN.NOMBREC, CN.CIUDADC HAVING AVG(D.CANTIDAD) >= ALL(SELECT AVG(CANTIDAD) FROM DISTRIBUCION GROUP BY CIFC);
+Ejercicio 32: SELECT DNI, NOMBRE, APELLIDO FROM CLIENTES WHERE DNI IN (SELECT DNI FROM VENTAS GROUP BY DNI ORDER BY COUNT(CODCOCHE) DESC FETCH FIRST 2 ROWS ONLY);
+Ejercicio 32.b: select * from ventas order by color offset 1 rows fetch next 2 rows with ties
+Ejercicio 33: creae view cochesporcliente2 as( select ventas.dni,nombre,apelldo,count(codcoche) ncoches from ventas, clientes where ventas.dni = clientes.dni group by ventas.dni,nombre,apellido order by ncoches desc fetch next 2 rows only)
+select * from cochesporcliente2,ventas where cochesporcliente2.dni=venas.dni
+
+
+desc = descendente
+asc = ascendene
+Ej: desc, dni asc
+FETCH FIRST 2 ROWS ONLY --> filas a devolver por la tabla
+FETCH FIRST 2 ROWS ONLY with ties, devuelve todos los q esten empatados tambien 
+select * from ventas order by color,dni desc offset 1 rows fetch next 2 rows with ties
+
+
+
+
+
+
+
+
+
+

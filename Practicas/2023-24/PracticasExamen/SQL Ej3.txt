@@ -1,0 +1,76 @@
+create table titulos(
+titulo_id varchar(20),
+titulo varchar(20),
+tipo varchar(20),
+precio decimal(1,0),
+ventas_previstas decimal(1,0),
+f_publicacion date,
+pre_publicacion date,
+ed_id varchar(8) not null,
+constraint pk_titulos primary key(titulo_id),
+constraint fk_titulos_editoriales foreign key(ed_id) references editoriales(ed_id)
+)
+
+
+create table editoriales(
+ed_id varchar(8),
+ed_nombre varchar(20),
+ed_direccion varchar(20),
+ed_ciudad varchar(20),
+constraint pk_editoriales primary key(ed_id)
+)
+
+create table autores(
+au_id varchar(8),
+au_nombre varchar(20),
+au_apellido varchar(20),
+au_telefono varchar(9),
+au_direccion varchar(20),
+au_ciudad varchar(20),
+constraint pk_autores primary key(au_id)
+)
+
+
+create table editores(
+editor_id varchar(8) not null,
+editor_nombre varchar(20),
+editor_apellido varchar(20),
+editor_posicion varchar(20),
+editor_telefono varchar(9),
+editor_direccion varchar(20),
+editor_ciudad varchar(20),
+editor_jefe varchar(20),
+editor_id2 varchar(8) not null,
+constraint pk_editores primary key(editor_id),
+constraint fk_editores_es_jefe foreign key(editor_id2) references editores (editor_id)
+)
+
+create table titulosautores(
+orden_autores varchar(20),
+porcentaje_participacion varchar(100),
+titulo_id varchar(8),
+au_id varchar(8),
+constraint pk_titulosautores primary key(titulo_id, au_id),
+constraint fk_titulosautores_titulos foreign key (titulo_id) references titulos(titulo_id),
+constraint fk_titulosautores_autores foreign key (au_id) references autores(au_id)
+)
+
+create table tituloseditores(
+orden_editores varchar(20),
+titulo_id varchar(8),
+editor_id varchar(8),
+constraint pk_tituloseditores primary key(titulo_id,editor_id),
+constraint fk_tituloseditores_titulos foreign key(titulo_id) references titulos(titulo_id),
+constraint fk_tituloseditores_editores foreign key(editor_id) references editores(editor_id)
+)
+
+
+
+
+
+
+
+
+
+
+

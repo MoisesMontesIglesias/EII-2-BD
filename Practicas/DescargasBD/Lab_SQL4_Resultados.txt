@@ -1,0 +1,38 @@
+1. (1 row)
+NOMBRE_CLIENTE
+Hayes
+- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+2. (1 row)
+NOMBRE_CLIENTE
+Johnson
+- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+3. (2 rows)
+NOMBRE_CLIENTE
+Johnson
+Hayes 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+4. (5 rows)
+NOMBRE_SUCURSAL
+Brighton
+North Town
+Perryridge
+Redwood
+Round Hill
+- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+5. (1 row)
+NOMBRE_SUCURSAL
+Round Hill
+- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+6. (3 rows)
+NOMBRE_CLIENTE
+Adams
+Hayes
+Johnson
+- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+7. (1 row)
+NOMBRE_SUCURSAL
+Central
+- - - - - - - - - - - - - - - - - - - - - - - - - - - -
+8. (1 row)
+SALDO_MEDIO
+450.000

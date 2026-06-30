@@ -1,0 +1,274 @@
+1. (2 rows)
+CIFM 	NOMBREM 	CIUDADCM                                              
+2	renault	barcelona                                           
+6	bmw	barcelona                                           
+---------------------------------------------------------------------
+2. (2 rows)
+DNI	NOMBRE	APELLIDO	CIUDAD                       
+1	luis	garcia		madrid
+4	maria	garcia		madrid
+
+(3 rows)
+DNI	NOMBRE	APELLIDO	CIUDAD     
+1	luis	garcia		madrid
+3	juan	martin		madrid
+4	maria	garcia		madrid
+---------------------------------------------------------------------
+3. (6 rows)
+APELLIDO	CIUDAD
+garcia		madrid
+lopez		valencia
+martin		madrid
+garcia		madrid
+gonzalez	barcelona
+lopez		barcelona
+---------------------------------------------------------------------
+4. (3 rows)
+APELLIDO
+garcia
+martin
+garcia
+---------------------------------------------------------------------
+5. (3 rows)
+NOMBREM
+citroen
+renault
+seat
+---------------------------------------------------------------------
+6. (3 rows)
+NOMBREM
+citroen
+renault
+seat
+---------------------------------------------------------------------
+7. (4 rows)
+NOMBRECH
+astra
+cordoba
+ibiza
+megane
+---------------------------------------------------------------------
+8. (9 rows)
+NOMBRECH
+300
+500
+700
+a4
+astra
+cordoba
+corsa
+megane
+zx
+---------------------------------------------------------------------
+                                         
+---------------------------------------------------------------------
+9. (11 rows)
+CIFM	DNI   
+1	1
+1	3
+1	4
+2	5
+2	6
+3	2
+4	1
+4	3
+4	4
+6	5
+6	6
+
+(25 rows)
+CIFM	DNI   
+1	2
+1	5
+1	6
+2	1
+2	2
+2	3
+2	4
+3	1
+3	3
+3	4
+3	5
+3	6
+4	2
+4	5
+4	6
+5	1
+5	2
+5	3
+5	4
+5	5
+5	6
+6	1
+6	2
+6	3
+6	4
+---------------------------------------------------------------------
+10. (3 rows)
+CODCOCHE
+10
+11
+12
+---------------------------------------------------------------------
+11. (5 rows)
+CODCOCHE
+1
+2
+3
+6
+8
+---------------------------------------------------------------------
+12. (5 rows)
+CODCOCHE
+1
+2
+3
+6
+8
+---------------------------------------------------------------------
+13. (4 rows)
+NOMBREM		NOMBREM  
+seat		audi
+renault		bmw
+audi		seat
+bmw		renault
+---------------------------------------------------------------------
+
+14. (3 rows)
+DNI
+1
+2
+3
+---------------------------------------------------------------------
+15. (3 rows)
+COLOR                                               
+amarillo                                                
+blanco                                               
+rojo                                              
+---------------------------------------------------------------------
+16. (6 rows)
+CODCOCHE
+1
+2
+3
+5
+6
+8
+---------------------------------------------------------------------
+17. (2 rows)
+NOMBRE
+javier
+ana
+---------------------------------------------------------------------
+18. (2 rows)
+nombre  apellido
+------  --------
+luis    garcia  
+juan    martin  
+---------------------------------------------------------------------
+19. (2 rows)
+NOMBRE	APELLIDO
+luis	garcia
+antonio	lopez
+---------------------------------------------------------------------
+20. (1 row)
+NOMBRE	APELLIDO         
+luis	garcia
+---------------------------------------------------------------------
+21. (1 row)
+DNI
+2
+---------------------------------------------------------------------
+22. (4 rows)
+NOMBRE
+ana
+javier
+juan
+maria
+---------------------------------------------------------------------
+23. (5 rows)
+CIFC	TOTAL_COCHES   
+1	17
+2	25
+3	13
+4	15
+5	38
+---------------------------------------------------------------------
+24. (1 row)
+CIFC	PROMEDIO   
+5	     12,67
+---------------------------------------------------------------------
+25. (3 rows)
+CIFC	TOTAL     
+1	17
+3	13
+4	15
+---------------------------------------------------------------------
+26. (1 row)
+TOTAL 
+6
+
+(1 row)
+TOTAL
+4
+---------------------------------------------------------------------
+27. (1 row)
+NOMBRE	APELLIDO   
+juan		martin
+---------------------------------------------------------------------
+28. (6 rows)
+DNI	NOMBRE	APELLIDO
+6	ana	lopez
+2	antonio	lopez
+5	javier	gonzalez
+3	juan	martin
+1	luis	garcia
+4	maria	garcia
+---------------------------------------------------------------------
+29. (1 row)
+NOMBRE	APELLIDO     
+luis	garcia
+
+(2 rows)
+NOMBRE	APELLIDO      
+antonio	lopez
+juan	martin
+---------------------------------------------------------------------
+30. (2 rows)	
+CIFC	NOMBREC	CIUDADC                                               
+2	bcar	madrid
+5	ecar	bilbao
+---------------------------------------------------------------------
+31. (1 row)
+CIFC	NOMBREC	CIUDADC                                               
+5	ecar	bilbao
+---------------------------------------------------------------------
+32. (2 rows)--pueden ser otros ya que hay varios con el mismo número de coches comprados (el dni 1 siempre sale, los demás pueden cambiar)
+dni  nombre  apellido
+---  ------  --------
+1    luis    garcia  
+6    ana     lopez   
+
+(3 rows)
+cifc  dni  codcoche  color 
+----  ---  --------  ------
+4	6	12	azul
+2	3	8	blanco
+1	1	3	blanco
+
+(2 rows)
+cifc  dni  codcoche  color 
+----  ---  --------  ------
+4     6          12  azul  
+1     1           3  blanco
+
+---------------------------------------------------------------------
+33. (5 rows)
+dni  nombre  apellido  codcoche  cifc  color   
+---  ------  --------  --------  ----  --------
+1    luis    garcia           1  1     amarillo
+1    luis    garcia           3  1     blanco  
+1    luis    garcia           2  2     gris    
+1    luis    garcia           6  2     rojo    
+6    ana     lopez           12  4     azul   
+

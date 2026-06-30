@@ -1,0 +1,12 @@
+Notas sobre el diagrama del examen 
+Section --> Tiene de clave primaria, sec_id, semester, year y course_id
+select count(*)
+from takes
+group by course_id, sec_id, semester, year
+Si hacemos un join de section y classroom, se añaden class_building y room_number
+course_id	prereq_id
+115		177
+141		925
+177		485
+
+PREFERIBLEMENTE NO USAR NATURAL JOIN, (MUCHOS PROBLEMAS)

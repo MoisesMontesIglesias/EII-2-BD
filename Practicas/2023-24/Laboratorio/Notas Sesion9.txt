@@ -1,0 +1,9 @@
+Sesion 9:
+Cuando declaramos una variable como por ejemplo n number:= 0
+Hay que escribir antes, DECLARE
+
+TRIGGER:	TABLA:
+		
+		EVENTO: (INSERT,UPDATE,DELETE)
+
+		TEMPORALIDAD: (AFTER,BEFORE)

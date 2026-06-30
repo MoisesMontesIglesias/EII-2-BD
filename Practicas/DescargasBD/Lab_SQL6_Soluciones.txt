@@ -1,0 +1,40 @@
+﻿--1. Muestra las ofertas realizadas por agencias que trabajan con mayoristas cuyo tipo de viajes que ofertan son  ‘hoteles’. Mostrar también el precio de la oferta. 
+select O.codoferta, origen, destino, precio
+    from oferta O, esrealizada E, agencia A, mayorista M
+    where O.codoferta= E.codoferta and E.codagencia = A.codagencia and A.codmayorista = M.codmayorista and tipo='hoteles';
+
+--2. Mostrar el número total de ventas realizadas por las agencias para cada tipo de mayorista siempre que el número sea  superior a 1.
+--OJO: Es SUM y No COUNT
+select tipo, SUM(ventasrealizadas) as VENTAS
+    from agencia A, mayorista M
+    where A.codmayorista = M.codmayorista
+    group by tipo having sum(ventasrealizadas)>1;
+
+--3. Indicar el mayor porcentaje de descuento aplicado a las compras de ofertas con origen Madrid.
+--OJO: no es necesario incluir ni tcliente ni tesrealizada
+select max(porcentaje) as MAYOR
+    from oferta O,compra C, tiene T, descuentos D
+    where O.origen='Madrid' and O.codoferta=C.codoferta and C.dni = T.dni and T.coddescuento=D.coddescuento;
+
+--4. Mostrar los clientes que no han hecho ninguna compra con pago fraccionado para agencias cuyo mayorista es de tipo ‘combinados’. 
+--OJO: Importante fijarse en el minus
+select nombre from cliente where dni in (
+	(select dni from cliente)
+	MINUS
+	(select dni
+        from compra C,agencia A,mayorista M
+	 	where C.codagencia=A.codagencia and A.codmayorista=M.codmayorista and tipo='combinados' and pagofraccionado='S'));
+
+--5. Mostar para  las compras realizadas el nombre del mayorista con el que trabaja la agencia que realiza la oferta que es comprada. Mostrar además del nombre del mayorista, el nombre de la agencia, el destino de la oferta comprada, el importe definitivo abonado, el nombre del cliente que ha hecho la compra y el porcentaje de descuento aplicado.
+--OJO: No es necesario incluir la tabla Esrealizada
+select nombremayorista, nombreagencia, destino, importedefinitivo, nombre, porcentaje
+	from oferta O, agencia A, compra C, mayorista M, cliente CL, tiene T, descuentos D
+	where O.codoferta=C.codoferta and C.codagencia=A.codagencia and A.codmayorista = M.codmayorista
+	    and C.dni=CL.dni and C.dni=T.dni and T.coddescuento = D.coddescuento;
+
+--6. Mostrar el nombre de la agencia que realiza la oferta más barata y con plazas todavía disponibles.
+select codoferta, A.codagencia, nombreagencia
+	from esrealizada ES, agencia A
+	where ES.codagencia =A.codagencia and plazasdisponibles>0 and precio = (select min(precio)
+        from esrealizada
+        where plazasdisponibles>0);
